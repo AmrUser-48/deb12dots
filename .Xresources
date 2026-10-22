@@ -8,28 +8,33 @@
 !!  :!:  !:!  :!:  !:!  :!:           !:!   :!:  !:!
 !!   ::  :::  ::   :::   :: ::::  :::: ::   ::::: ::
 !!   :   ::    :   : :  : :: ::   :: : :     : :  :
+!! -----------------------------------------------------------------------------
+!! Global font rendering, cursor theme, and pointer defaults
+!! -----------------------------------------------------------------------------
 !! Fonts
-	Xft.dpi:		96
-	Xft.autohint:	0
-	Xft.lcdfilter:	lcddefault
-	Xft.hintstyle:	hintfull
-	Xft.hinting:	1
-	Xft.rgba:		rgb
+    Xft.dpi:		96
+    Xft.autohint:	0
+    Xft.lcdfilter:	lcddefault
+    Xft.hintstyle:	hintfull
+    Xft.hinting:	1
+    Xft.rgba:		rgb
 !!  Xcursor.theme:  BreezeX-Light
 !!  Xcursor.theme: Qogir
-    Xcursor.theme:	Default 
+    Xcursor.theme:	Default
     Xcursor.size:	16
-	Xft.antialias:	true
+    Xft.antialias:	true
 
-
+!! -----------------------------------------------------------------------------
+!! XTerm: text, fonts, UTF-8, selection, scrollback, and keybindings
+!! -----------------------------------------------------------------------------
 !!  Xterm
     XTerm.termName: xterm-256color
- XTerm*loginShell: true
+    XTerm*loginShell: true
 !! XTerm*loginShell: false
 !!xterm*maximized: true
 !! Fonts
 !!   Draw box chars if font dont support feature
-   XTerm*forceBoxChars: false
+    XTerm*forceBoxChars: false
 !  XTerm*faceName: DejaVuSansMono Nerd Font Mono
 !XTerm*faceName: VictorMono Nerd Font Mono
 !XTerm*faceName: IBM\ Plex\ Mono
@@ -44,20 +49,20 @@
 ! XTerm*faceSize omitted: the active XLFD font is bitmap-based.
 !    xterm*renderFont: true
 !!  Font for menu
-  XTerm*font: -*-terminus-medium-r-normal--14-*-*-*-*-*-iso10646-1
+    XTerm*font: -*-terminus-medium-r-normal--14-*-*-*-*-*-iso10646-1
 !XTerm*boldFont: fixed
-XTerm*boldFont: -*-terminus-medium-r-normal--14-*-*-*-*-*-iso10646-1
+    XTerm*boldFont: -*-terminus-medium-r-normal--14-*-*-*-*-*-iso10646-1
 !  XTerm*font: -*-terminus-bold-r-*-*-12-*-*-*-*-*-iso10646-1
 !!  XTerm*font: -*-terminus-medium-r-*-*-12-*-*-*-*-*-*-*
 ! wait   XTerm*font: -*-fixed-bold-r-*-*-*-100-*-*-*-*-iso8859-1
 
-  XTerm*font1: -*-terminus-medium-r-normal--14-*-*-*-*-*-iso10646-1
-  XTerm*font2: -*-terminus-medium-r-normal--12-*-*-*-*-*-iso10646-1
-  XTerm*font3: -*-terminus-medium-r-normal--16-*-*-*-*-*-iso10646-1
-  XTerm*font4: -*-terminus-medium-r-normal--18-*-*-*-*-*-iso10646-1
-  XTerm*font5: -*-terminus-medium-r-normal--24-*-*-*-*-*-iso10646-1
-  XTerm*font6: -*-terminus-medium-r-normal--28-*-*-*-*-*-iso10646-1
-  XTerm*font7: -*-terminus-medium-r-normal--32-*-*-*-*-*-iso10646-1
+    XTerm*font1: -*-terminus-medium-r-normal--14-*-*-*-*-*-iso10646-1
+    XTerm*font2: -*-terminus-medium-r-normal--12-*-*-*-*-*-iso10646-1
+    XTerm*font3: -*-terminus-medium-r-normal--16-*-*-*-*-*-iso10646-1
+    XTerm*font4: -*-terminus-medium-r-normal--18-*-*-*-*-*-iso10646-1
+    XTerm*font5: -*-terminus-medium-r-normal--24-*-*-*-*-*-iso10646-1
+    XTerm*font6: -*-terminus-medium-r-normal--28-*-*-*-*-*-iso10646-1
+    XTerm*font7: -*-terminus-medium-r-normal--32-*-*-*-*-*-iso10646-1
 
 !! tamzen
 !!XTerm*font  : -*-tamzen-medium-*-*-*-16-*-*-*-*-*-*-*
@@ -86,11 +91,8 @@ XTerm*boldFont: -*-terminus-medium-r-normal--14-*-*-*-*-*-iso10646-1
     !VT font menu: Large
     !VT font menu: Huge
 
-
-
 ! Ensure that your locale is set up for UTF-8. If you do not use UTF-8, you may need to force xterm to more strictly follow your locale by setting
     XTerm.vt100.locale: true
-
 
 !! Selecting Text
 !! Only select text
@@ -105,7 +107,6 @@ XTerm*boldFont: -*-terminus-medium-r-normal--14-*-*-*-*-*-iso10646-1
     XTerm*fastScroll: true
     XTerm*scrollTtyOutput: false
 
-
 !! Keybinding
 !! - change fontsize on the fly (ctrl+plus = increase ; ctrl+minus = decrease, ctrl+0 = default)
 !! - copy/paste hotkey (ctrl+shift+c = copy ; ctrl+shift+v = paste)
@@ -119,10 +120,6 @@ XTerm*boldFont: -*-terminus-medium-r-normal--14-*-*-*-*-*-iso10646-1
     Ctrl Shift <Key>V: insert-selection(PRIMARY) \n\
     Shift <Key> Insert: insert-selection(CLIPBOARD) \n\
     Ctrl <Key> Insert: copy-selection(CLIPBOARD) \n\
-
-
-
-
 
 !!
 !! enable copy/paste hotkey to work (shift+insert = paste ; mouse highlight = copy)
@@ -175,8 +172,6 @@ XTerm*boldFont: -*-terminus-medium-r-normal--14-*-*-*-*-*-iso10646-1
 !!                                <BtnUp>:select-end(SELECT, CUT_BUFFER0) \n\
 !!                              <BtnDown>:ignore()
 
-
-
 !! set fontsize
 !! xterm*font:     *-fixed-*-*-*-12-*
 !! set font
@@ -189,15 +184,15 @@ XTerm*boldFont: -*-terminus-medium-r-normal--14-*-*-*-*-*-iso10646-1
     XTerm*cursorColor: grey
     XTerm*cursorBlink: false
 !
+!! Theme files are stored in .config/Xresources/colors/.
+!! Enable only one palette include at a time; colors.xterm is the Dracula palette.
 !! Colorcsheme {{{
-!   #include "colors.xterm"
-!  #include "dracula.xterm"
-   #include ".config/Xresources/colors/gruvbox-dark.xterm"
-!   #include "gruvbox-light.xterm"
+!   #include ".config/Xresources/colors/colors.xterm"
+!  #include ".config/Xresources/colors/colors.xterm"
+#include ".config/Xresources/colors/gruvbox-dark.xterm"
+!   #include ".config/Xresources/colors/gruvbox-light.xterm"
 
 !! }}}
-
-
 
 !! Xedit: probably incorrect colors settings
     xedit*.foreground:  #F8F8F2
@@ -219,6 +214,7 @@ XTerm*boldFont: -*-terminus-medium-r-normal--14-*-*-*-*-*-iso10646-1
     xedit*.color7:  #BFBFBF
     xedit*.color15: #E6E6E6
 
+!! Application-specific resources and optional terminal configurations
 !! Includes
 !!#include ".config/Xresources/xterm"
 #include ".config/Xresources/UXterm"
@@ -228,18 +224,18 @@ XTerm*boldFont: -*-terminus-medium-r-normal--14-*-*-*-*-*-iso10646-1
 !#include ".config/Xresources/koi8rxterm"
 
 !! XCalc
-xcalc*background: #1e1e1e
-xcalc*foreground: #e0e0e0
-xcalc.ti.bevel.background: #2d2d2d
-xcalc.ti.bevel.screen.background: #0a0a0a
-xcalc.ti.bevel.screen.foreground: #00ff00
+    xcalc*background: #1e1e1e
+    xcalc*foreground: #e0e0e0
+    xcalc.ti.bevel.background: #2d2d2d
+    xcalc.ti.bevel.screen.background: #0a0a0a
+    xcalc.ti.bevel.screen.foreground: #00ff00
 !!xcalc.ti.bevel.screen.font: -misc-fixed-medium-r-normal--14-*-*-*-*-*-iso8859-1
-xcalc.command.background: #3a3a3a
-xcalc.command.foreground: #e0e0e0
-xcalc.button.background: #2d2d2d
-xcalc.button.foreground: #e0e0e0
-xcalc.button.activeBackground: #404040
-xcalc.button.activeForeground: #ffffff
+    xcalc.command.background: #3a3a3a
+    xcalc.command.foreground: #e0e0e0
+    xcalc.button.background: #2d2d2d
+    xcalc.button.foreground: #e0e0e0
+    xcalc.button.activeBackground: #404040
+    xcalc.button.activeForeground: #ffffff
 !!xcalc*font: -misc-fixed-medium-r-normal--12-*-*-*-*-*-iso8859-1
 
 !!	vim: ft=xdefaults  ts=4 sw=4 sts=4 et sr
