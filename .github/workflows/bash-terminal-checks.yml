@@ -1,0 +1,36 @@
+name: Bash terminal configuration checks
+
+on:
+  push:
+    paths:
+      - '.bashrc'
+      - '.Xresources'
+      - '.config/Xresources/**'
+      - 'bash-command-timer/**'
+      - 'tests/**'
+      - '.github/workflows/bash-terminal-checks.yml'
+  pull_request:
+    paths:
+      - '.bashrc'
+      - '.Xresources'
+      - '.config/Xresources/**'
+      - 'bash-command-timer/**'
+      - 'tests/**'
+      - '.github/workflows/bash-terminal-checks.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  bash-checks:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check Bash syntax
+        run: |
+          bash -n .bashrc
+          bash -n bash-command-timer/bash_command_timer.sh
+          bash -n tests/bash-command-timer-smoke.sh
+      - name: Run command timer smoke tests
+        run: bash tests/bash-command-timer-smoke.sh
