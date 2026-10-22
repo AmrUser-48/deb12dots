@@ -17,6 +17,24 @@ process tree. If multiple variables are inherited, all corresponding markers
 appear. Interactive Bash startup also prints an OpenRC-style `.bashrc` marker. The supplied `etc/profile.d/40-user.sh` uses the same ` * Loading … ... [ ok ]` status-line format while configuring user aliases and helper functions.
 
 ## Command timer
+Tweaked some old version of Command Timer. don't remember where i steel it.
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+#                                                                             #
+#    Copyright (C) 2014-2020 Chuan Ji <chuan@jichu4n.com>                     #
+#                                                                             #
+#    Licensed under the Apache License, Version 2.0 (the "License");          #
+#    you may not use this file except in compliance with the License.         #
+#    You may obtain a copy of the License at                                  #
+#                                                                             #
+#     http://www.apache.org/licenses/LICENSE-2.0                              #
+#                                                                             #
+#    Unless required by applicable law or agreed to in writing, software      #
+#    distributed under the License is distributed on an "AS IS" BASIS,        #
+#    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. #
+#    See the License for the specific language governing permissions and      #
+#    limitations under the License.                                           #
+#                                                                             #
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 `bash-command-timer/upstream/bash_command_timer.sh` preserves the exact original timer script uploaded with the repository at baseline commit `cd0dea7755e43371a2a21c67b01d9ccb3f448cd0`. The active implementation is `bash-command-timer/bash_command_timer.sh`. It retains the familiar `[ duration | time ]` display, measures duration with `EPOCHREALTIME` on modern Bash, and uses Bash's built-in `printf %(...)T` clock formatter to avoid per-command `date` processes.
 
