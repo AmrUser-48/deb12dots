@@ -32,6 +32,10 @@ grep -Fq ']mc' "$repo_root/.bashrc"
 grep -Fq '\[\e[01;34m\][ ' "$repo_root/.bashrc"
 grep -Fq 'printf' "$repo_root/.bashrc"
 grep -Fq '.bashrc' "$repo_root/.bashrc"
-grep -Fq 'Loading /etc/profile.d/40-user.sh ...' "$repo_root/etc/profile.d/40-user.sh"
-grep -Fq '[ ok ]' "$repo_root/etc/profile.d/40-user.sh"
+# The profile script prints one debug marker at the end, not a fake service status.
+grep -Fq 'Simple startup debug marker' "$repo_root/etc/profile.d/40-user.sh"
+grep -Fq 'printf '\''\\033[1;32m * \\033[1;34m[\\033[0m %s \\033[1;34m]\\033[0m\\n'\'' "/etc/profile.d/40-user.sh"' "$repo_root/etc/profile.d/40-user.sh"
+! grep -Fq 'Loading /etc/profile.d/40-user.sh ...' "$repo_root/etc/profile.d/40-user.sh"
+! grep -Fq '[ ok ]' "$repo_root/etc/profile.d/40-user.sh"
+[[ $(tail -n 1 "$repo_root/etc/profile.d/40-user.sh") == *'/etc/profile.d/40-user.sh'* ]]
 echo "Shell configuration smoke tests passed."

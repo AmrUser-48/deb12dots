@@ -1,6 +1,3 @@
-# OpenRC-style shell-startup status line.
-printf '\033[1;32m * \033[0mLoading /etc/profile.d/40-user.sh ...'
-
 shopt -s histappend
 
 # no lesspipe, fast
@@ -45,5 +42,5 @@ trans :uk -b "$@"
 }
 
 
-# OpenRC's eend success status, printed after the profile setup.
-printf ' \033[1;32m[ ok ]\033[0m\n'
+# Simple startup debug marker; visual style only, with no OpenRC dependency.
+printf '\033[1;32m * \033[1;34m[\033[0m %s \033[1;34m]\033[0m\n' "/etc/profile.d/40-user.sh"
