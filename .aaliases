@@ -1,0 +1,297 @@
+# ex: ts=4 sw=4 et filetype=sh
+#######################################################
+#   settings
+#set -o noclobber
+#set -C
+#
+#____________________________________________
+#######################################################
+#PROMPT_DIRTRIM=1
+#
+# if runnimn bash
+if [ "$0" = "bash" ]; then
+    eval "$(lesspipe)"
+    alias src='source ~/.bashrc'
+    alias ashow='less ~/.bash_aliases'
+fi
+
+# if runnimn zsh
+if [ -n "$ZSH_VERSION" ]; then
+    alias src='source ~/.zshrc'
+    elif [ -f ~/.aaliases ]; then
+    alias ashow='less ~/.bash_aliases'
+fi
+
+#--------General
+#   colors
+alias ls='ls --color=auto'
+alias grep='grep --color=auto'
+alias egrep='egrep --color=auto'
+alias fgrep='fgrep --color=auto'
+
+alias o='fg '
+alias j='jobs'
+alias g='grep --color=always -i'
+
+alias df='df -h'
+alias t='pstree -h'
+function greg () { 
+if [ -z $@ ]
+then
+    grep --color=always| less 
+else
+    grep --color=always $@ | less
+fi
+}
+
+#   Apt aliases
+alias ac='sudo apt autoremove -y ; sudo apt clean'
+
+#   Less
+alias m='less -RmI '
+#alias m='less -MIR'
+alias c='clear'
+alias s='ss -tunp' # netstat
+alias q='tldr '
+#
+#--------Proc
+alias hop='htop'
+# ls listing
+alias l='ls --group-directories-first -Ashtr '
+alias ll='ls -lAFht --group-directories-first'
+#
+#--------Dir
+alias rd='rm -fvr '
+alias rm='rm -v'
+alias md='mkdir -vp '
+alias cp='cp -v'
+alias mkdir='mkdir -pv'
+alias mv='mv -v'
+#
+# edit
+#alias vi='busybox vi'
+alias vi='sudo -E nvim '
+
+alias historybakup='gzip -kc  ~/.bash_history > ~/.bash_history_$(date +%Y-%m-%d-%H-%M).gz'
+
+# Tg
+alias tsd='PREV=$(xdotool getactivewindow) && wmctrl -xa "TelegramDesktop" && sleep 0.2 && xdotool key ctrl+v && sleep 0.2 && xdotool key Return && wmctrl -i -a $PREV'
+
+alias freq='watch -n.1 cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq'
+
+alias showtime='watch -n1 date "+%F\ \ %B\ %A\ %H:%M:%S"'
+
+alias gamepademulator="sudo /home/jeroen/pipi/bin/python3 ~/mygamepad.uinpyt.py"
+# adb
+alias tethering-on="adb shell 'am start -n com.android.settings/.TetherSettings && input keyevent 20 20 20 20 KEYCODE_ENTER 4'"
+#
+# sh configs
+#alias acfg='nvim -n ~/.bash_aliases'
+alias brown='sox -c2 -b16 -r 44100 -n -d synth -n 79200 br'
+alias acfg='nvim -n ~/.aaliases'
+alias zcfg='nvim ~/.zshrc'
+alias bcfg='nvim -n --noplugin ~/.bashrc'
+alias vcfg='nvim ~/.vim/vimrc'
+alias ncfg='nvim ~/.config/nvim/init.vim'
+alias nv='nvim'
+alias bat='batcat --theme "Solarized (dark)"'
+alias plotting='sox --plot gnuplot -n -n  equalizer 1000 .8k -8 | gnuplot -p >& /dev/null'
+# net
+alias s='ss -tpn'
+#
+alias w='free -h ; df -h /'
+#
+alias xcalib_c='xcalib -c ; xcalib -co 84 -a'
+#
+#porn aliases
+alias ydb='yt-dlp -f best $(xclip -o)'
+alias ydp7='yt-dlp -f hls-720p $(xclip -o)'
+alias mpp='mpv --no-audio --ytdl-format=mp4-low $(xclip -o)'
+alias yd4p='yt-dlp -f hls-480p $(xclip -o)'
+# Clipbd
+alias ppaste='xclip -selection "primary" -o'
+#
+##### Navigation
+alias ..='cd ../ '
+alias ...='cd ../../ '
+#
+
+# Games
+#alias restart-game="adb shell 'am force-stop com.panzerdog.tacticool && am start -n com.panzerdog.tacticool/.androidtacticoolhelper.TacticoolActivity'"
+
+#
+alias dmesg='sudo dmesg'
+alias sox='sox_ng'
+alias soxi='soxi_ng'
+alias play='play_ng'
+
+alias cdGIT='cd ~/Documents/GIT/'
+alias cdd='cd ~/Downloads/'
+alias cdc='cd ~/Documents/'
+alias cdm='cd ~/Music/'
+alias cdp='cd ~/Pictures/'
+alias cd.='cd ~/.config/'
+alias cdb='cd ~/bin/'
+#
+#   flatpack apps
+#alias nvi="flatpak run io.neovim.nvim $*"
+#
+#--Functions-------------------------------------------
+# tldr help
+#q () {
+#       tldr "$*"
+#}
+
+# Fild name (dont need if "fd" installed) [ if - is slow thing ]
+#if [ ! -x $(command -v fd) ] 
+#then
+#fnd () {
+#   if [[ -d "$1" ]]
+#   then
+#find "$1" -name "$2" | fzf
+#   else
+#find . -name "$1" | fzf
+#   fi
+#}
+#fi
+
+# grep text
+ftext () {
+grep -iIHrn --color=always "$1" . | less -R -r
+}
+
+mkd () {
+if [[ ! -d $1 ]]
+    then
+mkdir -p "$1" && cd "$1" 
+else
+    mkdir -p "$1"2 && cd "$1"2
+fi
+}
+
+gtr () { 
+    #перекладач. буфер може містити ім'я файлу 
+    #або дані, які будуть відповідно оброблені.
+    # також перевіряється аргумент, він також може бути фацлом, або даними
+    #якщо аргумент не! пустий
+    # ClipBoard
+   #G_PRIMARY="$(xsel --primary --output)"
+   #G_SECONDARY="$(xsel --secondary --output)"
+   #G_CLIPBD="$(xsel --clipboard --output)"
+    Trans_Temp="$(xsel -o)"
+if [[ ! -z "$*" ]]
+  then
+    #якщо аргумент існуючий файл
+    if [[ -f "$*" ]]
+    then
+        echo translating file "$*"
+        trans :uk -b -i "$*"
+    else
+        echo translating argument "$*"
+        trans :uk -b "$*"
+    #вихід після успішного завершення - крах конструкуії
+    return 0
+    fi
+#інакше, якщо змінна, це існуючий файл
+elif [[ -f $Trans_Temp ]]
+    then
+    #переклад файлу ім'я якого взято з буферу обміну
+    echo translating file clip "$Trans_Temp"
+    trans :uk -b -i "$Trans_Temp"
+    return 0
+#інакше, якщо значення змінної не співпадає з існуючим файлом
+elif [[ ! -f $Trans_Temp ]]
+  then
+        #тоді - перекласти дані з буферу, якщо його значення не зеро
+    if [[ ! -z $Trans_Temp ]]
+    then
+        echo -e "$Trans_Temp" "\n" 
+        trans :uk -b "$Trans_Temp"
+    fi
+fi
+}
+
+gsearch () {
+links -dump  \
+    'https://google.com/search?q="$*"' \
+    | less
+}
+
+# logs
+#logv-apt () {
+#awk 'BEGIN{ start="0" } { if($0 ~ /Log started: '$(date +%F)' /) { start="1"} if ( start == "1" && $0 ~ /Unpacking.*over/) {gsub(/[\s\t)( ]+/,"",$5); printf("%s=%s ", $2 , $5)}}' /var/log/apt/term.log
+#}
+
+# VIFM
+vicd ()
+{
+  local dest=$(vifm --choose-dir - "$@")
+
+  if [ $? -eq 0 ]; then
+    cd "$dest"
+  fi
+}
+
+
+# Save command (ahahahhah)
+a () {
+echo "$*" >> $HOME/.saved_commands
+}
+
+save-commans () {
+echo "$*" >> $HOME/.saved_commands
+}
+alias A='less $HOME/.saved_commands'
+
+#######################################################
+#--Variables-------------------------------------------
+#######################################################
+# color man
+#man() {
+#env LESS_TERMCAP_mb=$'\E[01;31m' \
+#    LESS_TERMCAP_md=$'\E[01;38;5;74m' \
+#    LESS_TERMCAP_me=$'\E[0m' \
+#    LESS_TERMCAP_se=$'\E[0m' \
+#    LESS_TERMCAP_so=$'\E[38;5;246m' \
+#    LESS_TERMCAP_ue=$'\E[0m' \
+#    LESS_TERMCAP_us=$'\E[04;38;5;146' \
+#man "$@"
+#}
+# color man end
+
+
+
+#LC_ALL=uk_UA.UTF-8
+
+# here last working but stupid unvisible highlight
+ # man colorize
+#  man() {
+#      env LESS_TERMCAP_mb=$'\E[01;31m' \
+#      LESS_TERMCAP_md=$'\E[01;38;5;74m' \
+#      LESS_TERMCAP_me=$'\E[0m' \
+#      LESS_TERMCAP_se=$'\E[0m' \
+#      LESS_TERMCAP_so=$'\E[38;5;246m' \
+#      LESS_TERMCAP_ue=$'\E[0m' \
+#      LESS_TERMCAP_us=$'\E[04;38;5;146m' \
+#  man "$@"
+#  }
+
+
+#export MPD_HOST=$HOME/.mpd/socket
+#setenv SFK_COLORS theme:black
+#setenv SFK_COLORS on,def:14
+#setenv SFK_COLORS head:5,examp:11,file:11,hit:5,rep:7
+# SFK custum theme
+export SFK_COLORS=head:6,examp:8,file:11,hit:5,rep:7
+
+
+#######################################################
+gitu=AmrUser-48
+alias rncmpcpp='ncmpcpp -h 192.168.0.70 -p 8600'
+
+alias ai='aichat ; printf "\e[?12l"'
+#alias aichat='aichat; printf "\e[?12l"'
+#alias aichat-ng='aichat; printf "\e[?12l"'
+
+alias msrread='sudo rdmsr -a 0x1a0 ; sudo rdmsr -a 0x19a ; sudo rdmsr -a 0x199 ; sudo rdmsr -a 0x198'
+alias creset="printf "\e[?12l""
