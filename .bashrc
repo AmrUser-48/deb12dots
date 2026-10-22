@@ -1,18 +1,20 @@
-# ~/.bashrc: executed by bash(1) for non-login shells.
-# see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
-# for examples
-
 # If not running interactively, don't do anything
 case $- in
     *i*) ;;
       *) return;;
 esac
 
+
+
 # OpenRC-style marker: this file only reaches here for interactive Bash shells.
 printf '\033[1;32m * \033[1;34m[\033[0m %s \033[1;34m]\033[0m\n' "$HOME/.bashrc"
 
+
+
 export EDITOR=nvim
 export PAGER=less
+
+
 
 # don't put duplicate lines or lines starting with space in the history.
 # See bash(1) for more options
@@ -73,7 +75,9 @@ else
 fi
 unset color_prompt force_color_prompt
 
-# If this is an xterm set the title to user@host:dir
+
+
+# If this terminal is an xterm; set the title to user@host:dir
 case "$TERM" in
 xterm*|rxvt*)
     PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
@@ -81,6 +85,8 @@ xterm*|rxvt*)
 *)
     ;;
 esac
+
+
 
 # lf exports LF_LEVEL to shells it starts (for example, with its default w binding).
 # Match the variable directly; do not scan the process tree.
@@ -91,6 +97,8 @@ case ${LF_LEVEL-} in
         ;;
 esac
 
+
+
 # Ranger sets or increments RANGER_LEVEL for processes it launches.
 case ${RANGER_LEVEL-} in
     ('') ;;
@@ -99,6 +107,8 @@ case ${RANGER_LEVEL-} in
         ;;
 esac
 
+
+
 # Midnight Commander sets MC_SID for its subshell; child shells inherit it.
 case ${MC_SID-} in
     ('') ;;
@@ -106,6 +116,8 @@ case ${MC_SID-} in
         PS1='\[\e[01;34m\][ \[\e[01;32m\]mc\[\e[01;34m\] ]\[\e[00m\] '"$PS1"
         ;;
 esac
+
+
 
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
@@ -138,6 +150,7 @@ if [ -f ~/.aaliases ]; then
 fi
 
 
+
      bind '"\C-o":"\C-u lfcd\C-m"'  # bash
 lfcd () {
     tmp="$(mktemp)"
@@ -154,6 +167,7 @@ lfcd () {
 }
 
 
+
 # More binds
 
      bind '"\eq":"\C-a tldr \C-m"'
@@ -163,11 +177,6 @@ lfcd () {
      bind '"\eg":" \| grep -i "'
 
 
-# - to _ 
-# this is replacing all - to _ 
-#     function cd() {
-#  builtin cd "${@//-/_}"
-#}
 
 cd() {
   local target="${1//-/_}"
@@ -182,8 +191,12 @@ cd() {
   fi
 }
 
-     [ -f /usr/share/doc/fzf/examples/key-bindings.bash ] && source /usr/share/doc/fzf/examples/key-bindings.bash
+
+# fzf
+[ -f /usr/share/doc/fzf/examples/key-bindings.bash ] && source /usr/share/doc/fzf/examples/key-bindings.bash
 [ -f /usr/share/bash-completion/completions/fzf ] && source /usr/share/bash-completion/completions/fzf
+
+
 
 # Command timer: maintained, Readline-aware implementation.
 _bct_script="${BASH_COMMAND_TIMER_PATH:-$HOME/.local/lib/bash-command-timer/bash_command_timer.sh}"
@@ -192,17 +205,6 @@ if [[ -r "$_bct_script" ]]; then
 fi
 unset _bct_script
 
-
-# enable programmable completion features (you don't need to enable
-# this, if it's already enabled in /etc/bash.bashrc and /etc/profile
-# sources /etc/bash.bashrc).
-if ! shopt -oq posix; then
-  if [ -f /usr/share/bash-completion/bash_completion ]; then
-    . /usr/share/bash-completion/bash_completion
-  elif [ -f /etc/bash_completion ]; then
-    . /etc/bash_completion
-  fi
-fi
 
 
 # run help
@@ -228,42 +230,11 @@ run-help() {
     fi
 }
 
+
+
 # Bind Alt+h to run-help
 bind -x '"\eh": run-help'
-########################
 
-_aichat_completion() {
-    local cur prev
-    cur="${COMP_WORDS[COMP_CWORD]}"
-    prev="${COMP_WORDS[COMP_CWORD-1]}"
 
-    local options="
-        --help
-        --version
-        --role
-        -r
-        --session
-        -s
-        --list-roles
-        --list-models
-        --config-dir
-        --no-stream
-        --prompt
-    "
-
-    case "$prev" in
-        --role|-r)
-            COMPREPLY=( $(compgen -W "$(aichat --list-roles 2>/dev/null)" -- "$cur") )
-            ;;
-        --session|-s)
-            COMPREPLY=( $(compgen -W "$(aichat --list-sessions 2>/dev/null)" -- "$cur") )
-            ;;
-        *)
-            COMPREPLY=( $(compgen -W "$options" -- "$cur") )
-            ;;
-    esac
-}
-
-complete -F _aichat_completion aichat
 
 #PROMPT_COMMAND='printf "\e[90m"; printf "─%.0s" $(seq 1 $COLUMNS); printf "\e[0m\n"'
