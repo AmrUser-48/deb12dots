@@ -24,6 +24,9 @@ fi
 
 # LF's documented environment marker is used directly instead of scanning processes.
 grep -Fq 'LF_LEVEL' "$repo_root/.bashrc"
+grep -Fq 'if [[ -n "${RANGER_LEVEL:-}" ]]; then' "$repo_root/.bashrc"
+grep -Fq ']lf' "$repo_root/.bashrc"
+grep -Fq ']ranger' "$repo_root/.bashrc"
 grep -Fq '\[\e[01;34m\][ ' "$repo_root/.bashrc"
 grep -Fq 'printf' "$repo_root/.bashrc"
 grep -Fq '.bashrc' "$repo_root/.bashrc"

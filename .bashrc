@@ -88,6 +88,12 @@ if [[ -n "${LF_LEVEL:-}" ]]; then
     PS1='\[\e[01;34m\][ \[\e[01;32m\]lf\[\e[01;34m\] ]\[\e[00m\] '"$PS1"
 fi
 
+# Ranger sets or increments RANGER_LEVEL for processes it launches.
+# Check it directly; do not scan the parent-process tree.
+if [[ -n "${RANGER_LEVEL:-}" ]]; then
+    PS1='\[\e[01;34m\][ \[\e[01;32m\]ranger\[\e[01;34m\] ]\[\e[00m\] '"$PS1"
+fi
+
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"

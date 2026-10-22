@@ -8,9 +8,11 @@ Debian 12 Bash and X11 terminal configuration.
 `BASH_VERSION` or `ZSH_VERSION`. The `ashow` alias opens this shared file,
 while `src` reloads the appropriate shell startup file.
 
-lf exports `LF_LEVEL` to shells started from its default `w` binding. Bash
-uses it to add a colored `[ lf ]` prompt marker without walking the process
-tree. Interactive Bash startup also prints an OpenRC-style `.bashrc` marker.
+lf exports `LF_LEVEL` to shells started from its default `w` binding, and
+Ranger sets or increments `RANGER_LEVEL` for child processes. Bash checks both
+variables directly and adds colored `[ lf ]` and `[ ranger ]` prompt markers as
+appropriate, without walking the process tree. If both are set, both markers
+appear. Interactive Bash startup also prints an OpenRC-style `.bashrc` marker.
 
 ## Command timer
 
