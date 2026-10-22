@@ -8,21 +8,21 @@
 #######################################################
 #PROMPT_DIRTRIM=1
 #
-# if runnimn bash
-if [ "$0" = "bash" ]; then
-    eval "$(lesspipe)"
+# Shell-specific setup: version variables work reliably for sourced files.
+if [ -n "${BASH_VERSION:-}" ]; then
+    if command -v lesspipe >/dev/null 2>&1; then
+        eval "$(SHELL=/bin/sh lesspipe)"
+    fi
     alias src='source ~/.bashrc'
-    alias ashow='less ~/.bash_aliases'
-fi
-
-# if runnimn zsh
-if [ -n "$ZSH_VERSION" ]; then
+elif [ -n "${ZSH_VERSION:-}" ]; then
     alias src='source ~/.zshrc'
-    elif [ -f ~/.aaliases ]; then
-    alias ashow='less ~/.bash_aliases'
 fi
 
-#--------General
+# This file is shared by Bash and Zsh.
+alias ashow='less ~/.aaliases'
+
+# -----------------------------------------------------------------------------
+# General commands
 #   colors
 alias ls='ls --color=auto'
 alias grep='grep --color=auto'
@@ -35,32 +35,23 @@ alias g='grep --color=always -i'
 
 alias df='df -h'
 alias t='pstree -h'
-function greg () { 
-if [ -z $@ ]
-then
-    grep --color=always| less 
-else
-    grep --color=always $@ | less
-fi
-}
 
-#   Apt aliases
+# Package maintenance
 alias ac='sudo apt autoremove -y ; sudo apt clean'
 
-#   Less
+# Text viewing and command-line tools
 alias m='less -RmI '
 #alias m='less -MIR'
 alias c='clear'
-alias s='ss -tunp' # netstat
 alias q='tldr '
 #
-#--------Proc
+# Processes and system status
 alias hop='htop'
-# ls listing
+# Directory listings
 alias l='ls --group-directories-first -Ashtr '
 alias ll='ls -lAFht --group-directories-first'
 #
-#--------Dir
+# File and directory operations
 alias rd='rm -fvr '
 alias rm='rm -v'
 alias md='mkdir -vp '
@@ -68,13 +59,13 @@ alias cp='cp -v'
 alias mkdir='mkdir -pv'
 alias mv='mv -v'
 #
-# edit
+# Editors and configuration
 #alias vi='busybox vi'
 alias vi='sudo -E nvim '
 
 alias historybakup='gzip -kc  ~/.bash_history > ~/.bash_history_$(date +%Y-%m-%d-%H-%M).gz'
 
-# Tg
+# Desktop integration, clipboard, and Android
 alias tsd='PREV=$(xdotool getactivewindow) && wmctrl -xa "TelegramDesktop" && sleep 0.2 && xdotool key ctrl+v && sleep 0.2 && xdotool key Return && wmctrl -i -a $PREV'
 
 alias freq='watch -n.1 cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq'
@@ -85,7 +76,7 @@ alias gamepademulator="sudo /home/jeroen/pipi/bin/python3 ~/mygamepad.uinpyt.py"
 # adb
 alias tethering-on="adb shell 'am start -n com.android.settings/.TetherSettings && input keyevent 20 20 20 20 KEYCODE_ENTER 4'"
 #
-# sh configs
+# Configuration editing shortcuts
 #alias acfg='nvim -n ~/.bash_aliases'
 alias brown='sox -c2 -b16 -r 44100 -n -d synth -n 79200 br'
 alias acfg='nvim -n ~/.aaliases'
@@ -96,7 +87,7 @@ alias ncfg='nvim ~/.config/nvim/init.vim'
 alias nv='nvim'
 alias bat='batcat --theme "Solarized (dark)"'
 alias plotting='sox --plot gnuplot -n -n  equalizer 1000 .8k -8 | gnuplot -p >& /dev/null'
-# net
+# Network and connectivity
 alias s='ss -tpn'
 #
 alias w='free -h ; df -h /'
@@ -111,12 +102,12 @@ alias yd4p='yt-dlp -f hls-480p $(xclip -o)'
 # Clipbd
 alias ppaste='xclip -selection "primary" -o'
 #
-##### Navigation
+# Navigation shortcuts
 alias ..='cd ../ '
 alias ...='cd ../../ '
 #
 
-# Games
+# Games and audio
 #alias restart-game="adb shell 'am force-stop com.panzerdog.tacticool && am start -n com.panzerdog.tacticool/.androidtacticoolhelper.TacticoolActivity'"
 
 #
@@ -133,17 +124,18 @@ alias cdp='cd ~/Pictures/'
 alias cd.='cd ~/.config/'
 alias cdb='cd ~/bin/'
 #
-#   flatpack apps
+# Optional Flatpak examples
 #alias nvi="flatpak run io.neovim.nvim $*"
 #
-#--Functions-------------------------------------------
-# tldr help
+# -----------------------------------------------------------------------------
+# Shell functions
+# Help
 #q () {
 #       tldr "$*"
 #}
 
-# Fild name (dont need if "fd" installed) [ if - is slow thing ]
-#if [ ! -x $(command -v fd) ] 
+# Optional filename-search helper (disabled; use fd)
+#if [ ! -x $(command -v fd) ]
 #then
 #fnd () {
 #   if [[ -d "$1" ]]
@@ -155,7 +147,15 @@ alias cdb='cd ~/bin/'
 #}
 #fi
 
-# grep text
+# Text search
+greg () {
+    if [ "$#" -eq 0 ]; then
+        grep --color=always | less
+    else
+        grep --color=always "$@" | less
+    fi
+}
+
 ftext () {
 grep -iIHrn --color=always "$1" . | less -R -r
 }
@@ -163,14 +163,14 @@ grep -iIHrn --color=always "$1" . | less -R -r
 mkd () {
 if [[ ! -d $1 ]]
     then
-mkdir -p "$1" && cd "$1" 
+mkdir -p "$1" && cd "$1"
 else
     mkdir -p "$1"2 && cd "$1"2
 fi
 }
 
-gtr () { 
-    #перекладач. буфер може містити ім'я файлу 
+gtr () {
+    #перекладач. буфер може містити ім'я файлу
     #або дані, які будуть відповідно оброблені.
     # також перевіряється аргумент, він також може бути фацлом, або даними
     #якщо аргумент не! пустий
@@ -205,7 +205,7 @@ elif [[ ! -f $Trans_Temp ]]
         #тоді - перекласти дані з буферу, якщо його значення не зеро
     if [[ ! -z $Trans_Temp ]]
     then
-        echo -e "$Trans_Temp" "\n" 
+        echo -e "$Trans_Temp" "\n"
         trans :uk -b "$Trans_Temp"
     fi
 fi
@@ -217,12 +217,12 @@ links -dump  \
     | less
 }
 
-# logs
+# Optional APT-log helper (disabled)
 #logv-apt () {
 #awk 'BEGIN{ start="0" } { if($0 ~ /Log started: '$(date +%F)' /) { start="1"} if ( start == "1" && $0 ~ /Unpacking.*over/) {gsub(/[\s\t)( ]+/,"",$5); printf("%s=%s ", $2 , $5)}}' /var/log/apt/term.log
 #}
 
-# VIFM
+# Vifm
 vicd ()
 {
   local dest=$(vifm --choose-dir - "$@")
@@ -233,7 +233,7 @@ vicd ()
 }
 
 
-# Save command (ahahahhah)
+# Saved commands
 a () {
 echo "$*" >> $HOME/.saved_commands
 }
@@ -244,7 +244,8 @@ echo "$*" >> $HOME/.saved_commands
 alias A='less $HOME/.saved_commands'
 
 #######################################################
-#--Variables-------------------------------------------
+# -----------------------------------------------------------------------------
+# Environment and application-specific configuration
 #######################################################
 # color man
 #man() {
@@ -258,7 +259,6 @@ alias A='less $HOME/.saved_commands'
 #man "$@"
 #}
 # color man end
-
 
 
 #LC_ALL=uk_UA.UTF-8
@@ -294,4 +294,4 @@ alias ai='aichat ; printf "\e[?12l"'
 #alias aichat-ng='aichat; printf "\e[?12l"'
 
 alias msrread='sudo rdmsr -a 0x1a0 ; sudo rdmsr -a 0x19a ; sudo rdmsr -a 0x199 ; sudo rdmsr -a 0x198'
-alias creset="printf "\e[?12l""
+alias creset='printf "\e[?12l"'

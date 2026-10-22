@@ -2,6 +2,16 @@
 
 Debian 12 Bash and X11 terminal configuration.
 
+## Shared shell configuration
+
+`.aaliases` is shared by Bash and Zsh and detects the sourcing shell with
+`BASH_VERSION` or `ZSH_VERSION`. The `ashow` alias opens this shared file,
+while `src` reloads the appropriate shell startup file.
+
+lf exports `LF_LEVEL` to shells started from its default `w` binding. Bash
+uses it to add a colored `[ lf ]` prompt marker without walking the process
+tree. Interactive Bash startup also prints an OpenRC-style `.bashrc` marker.
+
 ## Command timer
 
 `bash-command-timer/upstream/bash_command_timer.sh` preserves the exact original timer script uploaded with the repository at baseline commit `cd0dea7755e43371a2a21c67b01d9ccb3f448cd0`. The active implementation is `bash-command-timer/bash_command_timer.sh`. It retains the familiar `[ duration | time ]` display, measures duration with `EPOCHREALTIME` on modern Bash, and uses Bash's built-in `printf %(...)T` clock formatter to avoid per-command `date` processes.

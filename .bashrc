@@ -8,6 +8,9 @@ case $- in
       *) return;;
 esac
 
+# OpenRC-style marker: this file only reaches here for interactive Bash shells.
+printf '\033[1;32m * \033[1;34m[\033[0m %s \033[1;34m]\033[0m\n' "$HOME/.bashrc"
+
 export EDITOR=nvim
 export PAGER=less
 
@@ -78,6 +81,12 @@ xterm*|rxvt*)
 *)
     ;;
 esac
+
+# lf exports LF_LEVEL to shells it starts (for example, with its default w binding).
+# This is an environment-variable check, not a process-tree scan.
+if [[ -n "${LF_LEVEL:-}" ]]; then
+    PS1='\[\e[01;34m\][ \[\e[01;32m\]lf\[\e[01;34m\] ]\[\e[00m\] '"$PS1"
+fi
 
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
@@ -239,4 +248,3 @@ _aichat_completion() {
 complete -F _aichat_completion aichat
 
 #PROMPT_COMMAND='printf "\e[90m"; printf "─%.0s" $(seq 1 $COLUMNS); printf "\e[0m\n"'
-

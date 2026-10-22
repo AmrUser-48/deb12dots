@@ -4,6 +4,8 @@ on:
   push:
     paths:
       - '.bashrc'
+      - '.aaliases'
+      - '.zshrc'
       - '.Xresources'
       - '.config/Xresources/**'
       - 'bash-command-timer/**'
@@ -12,6 +14,8 @@ on:
   pull_request:
     paths:
       - '.bashrc'
+      - '.aaliases'
+      - '.zshrc'
       - '.Xresources'
       - '.config/Xresources/**'
       - 'bash-command-timer/**'
@@ -30,7 +34,11 @@ jobs:
       - name: Check Bash syntax
         run: |
           bash -n .bashrc
+          bash -n .aaliases
+          bash -n tests/shell-config-smoke.sh
           bash -n bash-command-timer/bash_command_timer.sh
           bash -n tests/bash-command-timer-smoke.sh
       - name: Run command timer smoke tests
         run: bash tests/bash-command-timer-smoke.sh
+      - name: Run shell configuration smoke tests
+        run: bash tests/shell-config-smoke.sh
