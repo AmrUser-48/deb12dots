@@ -16,11 +16,14 @@ export PAGER=less
 HISTCONTROL=ignoreboth
 
 # append to the history file, don't overwrite it
-shopt -s histappend
+shopt -s histappend cmdhist
 
 # for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
 HISTSIZE=10000
 HISTFILESIZE=20000
+
+# Enable bracketed paste so pasted long commands are handled as one Readline edit.
+bind 'set enable-bracketed-paste on'
 
 # check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
@@ -38,6 +41,7 @@ if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
     debian_chroot=$(cat /etc/debian_chroot)
 fi
 
+# Keep nonprinting terminal sequences in PS1 inside \\[...\\]; Readline uses this for long-line cursor tracking.
 # set a fancy prompt (non-color, unless we know we "want" color)
 case "$TERM" in
     xterm-color|*-256color) color_prompt=yes;;
@@ -153,9 +157,12 @@ cd() {
      [ -f /usr/share/doc/fzf/examples/key-bindings.bash ] && source /usr/share/doc/fzf/examples/key-bindings.bash
 [ -f /usr/share/bash-completion/completions/fzf ] && source /usr/share/bash-completion/completions/fzf
 
-# command timer
-
-[ -f ~/bash-command-timer/bash_command_timer.sh ] && source ~/bash-command-timer/bash_command_timer.sh 
+# Command timer: maintained, Readline-aware implementation.
+_bct_script="${BASH_COMMAND_TIMER_PATH:-$HOME/.local/lib/bash-command-timer/bash_command_timer.sh}"
+if [[ -r "$_bct_script" ]]; then
+    source "$_bct_script"
+fi
+unset _bct_script
 
 
 # enable programmable completion features (you don't need to enable

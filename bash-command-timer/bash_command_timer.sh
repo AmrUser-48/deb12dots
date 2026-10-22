@@ -1,247 +1,242 @@
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-#                                                                             #
-#    Copyright (C) 2014-2020 Chuan Ji <chuan@jichu4n.com>                     #
-#                                                                             #
-#    Licensed under the Apache License, Version 2.0 (the "License");          #
-#    you may not use this file except in compliance with the License.         #
-#    You may obtain a copy of the License at                                  #
-#                                                                             #
-#     http://www.apache.org/licenses/LICENSE-2.0                              #
-#                                                                             #
-#    Unless required by applicable law or agreed to in writing, software      #
-#    distributed under the License is distributed on an "AS IS" BASIS,        #
-#    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. #
-#    See the License for the specific language governing permissions and      #
-#    limitations under the License.                                           #
-#                                                                             #
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+#!/usr/bin/env bash
+# Readline-safe derivative of bash-command-timer.
+# Frozen pre-refactor baseline: upstream/bash_command_timer.sh
+# Original copyright: Chuan Ji, 2014-2020. Apache-2.0; see LICENSE.
 
-
-
-# A simple Bash script for printing timing information for each command line
-# executed.
-#
-# For the most up-to-date version, as well as further information and
-# installation instructions, please visit the GitHub project page at
-#     https://github.com/jichu4n/bash-command-timer
-
-
-
-# SETTINGS
-# ========
-#
-# Whether to enable the command timer by default.
-#
-# To temporarily disable the printing of timing information, type the following
-# in a session:
-#     BCT_ENABLE=0
-# To re-enable:
-#     BCT_ENABLE=1
-BCT_ENABLE=1
-
-# The color of the output for successful and failed commands respectively.
-#
-# They should be a color string usable in a VT100 escape sequence (see
-# http://en.wikipedia.org/wiki/ANSI_escape_code#Colors), without the
-# escape sequence prefix and suffix. For example, bold red would be '1;31'.
-#
-# The color of the output is set in the function BCTPreCommand
-#
-# If empty, disable colored output. Set them to empty if your terminal does not
-# support VT100 escape sequences.
-BCT_SUCCESS_COLOR='34'
-BCT_ERROR_COLOR='91'
-
-# The display format of the current time.
-#
-# This is a strftime format string (see http://strftime.org/). To tweak the
-# display format of the current time, change the following line to your desired
-# pattern.
-#
-# If empty, disables printing of current time.
-BCT_TIME_FORMAT='%b %d %I:%M%p'
-
-# Whether to print command timings up to millisecond precision.
-#
-# If set to 0, will print up to seconds precision.
-BCT_MILLIS=1
-
-# Wheter to wrap to the next line if the output string would overlap with
-# characters of last command's output
-BCT_WRAP=0
-
-
-
-# IMPLEMENTATION
-# ==============
-
-# BCTTime:
-#
-# Command to print out the current time in nanoseconds. This is required
-# because the "date" command in OS X and BSD do not support the %N sequence.
-#
-# BCTPrintTime:
-#
-# Command to print out a timestamp using BCT_TIME_FORMAT. The timestamp should
-# be in seconds. This is required because the "date" command in Linux and OS X
-# use different arguments to specify the timestamp to print.
-if date +'%N' | grep -qv 'N'; then
-  BCTTime="date '+%s%N'"
-  function BCTPrintTime() {
-    date --date="@$1" +"$BCT_TIME_FORMAT"
-  }
-elif hash gdate 2>/dev/null && gdate +'%N' | grep -qv 'N'; then
-  BCTTime="gdate '+%s%N'"
-  function BCTPrintTime() {
-    gdate --date="@$1" +"$BCT_TIME_FORMAT"
-  }
-elif hash perl 2>/dev/null; then
-  BCTTime="perl -MTime::HiRes -e 'printf(\"%d\",Time::HiRes::time()*1000000000)'"
-  function BCTPrintTime() {
-    date -r "$1" +"$BCT_TIME_FORMAT"
-  }
-else
-  echo 'No compatible date, gdate or perl commands found, aborting'
-  exit 1
+if [[ -z ${BASH_VERSION:-} ]]; then
+    return 0
+fi
+if [[ ${BASH_SOURCE[0]} == "$0" ]]; then
+    printf '%s\n' 'bash_command_timer.sh must be sourced, not executed.' >&2
+    exit 2
+fi
+if [[ ${BCT_LOADED:-0} == 1 ]]; then
+    return 0
 fi
 
+: "${BCT_ENABLE:=1}"
+: "${BCT_SUCCESS_COLOR:=34}"
+: "${BCT_ERROR_COLOR:=91}"
+: "${BCT_TIME_FORMAT=%b %d %I:%M%p}"
+: "${BCT_MILLIS:=1}"
+: "${BCT_COLOR_OUTPUT:=1}"
 
-# BCTPreCommand is trapped to the DEBUG trap, directly or through bash-preexec.
-# The debug trap is invoked before the execution of each command typed by the
-# user (once for every command in a composite command) and again before the
-# execution of PROMPT_COMMAND after the user's command finishes. Thus, to be
-# able to preserve the timestamp before the execution of the first command, we
-# set the BCT_AT_PROMPT flag in PROMPT_COMMAND, only set the start time if the
-# flag is set and clear it after the first execution.
+# Keep the timer inside PS1; never move the terminal cursor from PROMPT_COMMAND.
+BCT_BASE_PS1=${BCT_BASE_PS1-${PS1-}}
+BCT_TIMER_PROMPT_PREFIX=''
+BCT_COMMAND_START_NS=''
 BCT_AT_PROMPT=1
-function BCTPreCommand() {
-  local EXIT="$?"
-  if [ $EXIT == 0 ]
-  then
-    # colour for exit without error
-    BCT_COLOR=$BCT_SUCCESS_COLOR
-  else
-    # colour for exit with error
-    BCT_COLOR=$BCT_ERROR_COLOR
-  fi
-  if [ -z "$BCT_AT_PROMPT" ]; then
-    return
-  fi
-  unset BCT_AT_PROMPT
-  BCT_COMMAND_START_TIME=$(eval $BCTTime)
-}
-
-
-# Bash will automatically set COLUMNS to the current terminal width.
-export COLUMNS
-
-
-# Flag to prevent printing out the time upon first login.
 BCT_FIRST_PROMPT=1
-# This is executed before printing out the prompt.
-function BCTPostCommand() {
-  BCT_AT_PROMPT=1
+BCT_LAST_STATUS=0
+BCT_USE_BASH_PREEXEC=0
 
-  if [ -n "$BCT_FIRST_PROMPT" ]; then
-    unset BCT_FIRST_PROMPT
-    return
-  fi
+_bct_now_ns() {
+    local stamp=${EPOCHREALTIME-}
+    if [[ $stamp == *.* ]]; then
+        BCT_NOW_NS="${stamp/./}000"
+        return 0
+    fi
 
-  if [ -z "$BCT_ENABLE" ] || [ $BCT_ENABLE -ne 1 ]; then
-    return
-  fi
-
-  # BCTTime prints out time in nanoseconds.
-  local MSEC=1000000
-  local SEC=$(($MSEC * 1000))
-  local MIN=$((60 * $SEC))
-  local HOUR=$((60 * $MIN))
-  local DAY=$((24 * $HOUR))
-
-  local command_start_time=$BCT_COMMAND_START_TIME
-  local command_end_time=$(eval $BCTTime)
-  local command_time=$(($command_end_time - $command_start_time))
-  local num_days=$(($command_time / $DAY))
-  local num_hours=$(($command_time % $DAY / $HOUR))
-  local num_mins=$(($command_time % $HOUR / $MIN))
-  local num_secs=$(($command_time % $MIN / $SEC))
-  local num_msecs=$(($command_time % $SEC / $MSEC))
-  local time_str=""
-  if [ $num_days -gt 0 ]; then
-    time_str="${time_str}${num_days}d "
-  fi
-  if [ $num_hours -gt 0 ]; then
-    time_str="${time_str}${num_hours}h "
-  fi
-  if [ $num_mins -gt 0 ]; then
-    time_str="${time_str}${num_mins}m "
-  fi
-  local num_msecs_pretty=''
-  if [ -n "$BCT_MILLIS" ] && [ $BCT_MILLIS -eq 1 ]; then
-    local num_msecs_pretty=$(printf '%03d' $num_msecs)
-  fi
-  time_str="${time_str}${num_secs}s${num_msecs_pretty}"
-  now_str=$(BCTPrintTime $(($command_end_time / $SEC)))
-  if [ -n "$now_str" ]; then
-    local output_str="[ $time_str | $now_str ]"
-  else
-    local output_str="[ $time_str ]"
-  fi
-  if [ -n "$BCT_COLOR" ]; then
-    local output_str_colored="\033[${BCT_COLOR}m${output_str}\033[0m"
-  else
-    local output_str_colored="${output_str}"
-  fi
-  # Trick to make sure the output wraps to the next line if there is not
-  # enough room for the string (only when BCT_WRAP == 1)
-  if [ -n "$BCT_WRAP" ] && [ $BCT_WRAP -eq 1 ]; then
-    # we'll print as many spaces as characters exist in output_str, plus 2
-    local wrap_space_prefix="${output_str//?/ }  "
-  else
-    local wrap_space_prefix=""
-  fi
-
-  # Move to the end of the line. This will NOT wrap to the next line
-  # unless you have BCT_WRAP == 1
-  echo -ne "$wrap_space_prefix\033[${COLUMNS}C"
-  # Move back (length of output_str) columns.
-  echo -ne "\033[${#output_str}D"
-  # Finally, print output.
-  echo -e "${output_str_colored}"
+    local value
+    value=$(date +%s%N 2>/dev/null) || value=''
+    if [[ $value =~ ^[0-9]+$ ]]; then
+        BCT_NOW_NS=$value
+        return 0
+    fi
+    value=$(date +%s 2>/dev/null) || return 1
+    [[ $value =~ ^[0-9]+$ ]] || return 1
+    BCT_NOW_NS="${value}000000000"
 }
 
+_bct_format_duration() {
+    local elapsed_ns=${1:-0}
+    [[ $elapsed_ns =~ ^[0-9]+$ ]] || elapsed_ns=0
+    local total_seconds=$((elapsed_ns / 1000000000))
+    local days=$((total_seconds / 86400))
+    local hours=$((total_seconds % 86400 / 3600))
+    local minutes=$((total_seconds % 3600 / 60))
+    local seconds=$((total_seconds % 60))
+    local milliseconds=$((elapsed_ns / 1000000 % 1000))
+    local result='' msec=''
 
-# Callbacks BCTPreCommand() and BCTPostCommand() can be tied to the `DEBUG` 
-# trap and `PROMPT_COMMAND` variable in two ways: 
-#   * Directly, which makes the script self-contained but breaks compatibility 
-#     with other scripts that use DEBUG/PROMPT_COMMAND,
-#   * Through `bash-preexec`, which allows several scripts to tie callbacks to
-#     DEBUG/PROMPT_COMMAND, but isn't self contained,
-#
-# If `bash-preexec` is found on the system, method 1 is used. Else, we fall 
-# back to the direct way. 
-#
-function BCTRegisterCallbacksWithBashPreexec() {
-  source "$1"
-  preexec_functions+=(BCTPreCommand)
-  precmd_functions+=(BCTPostCommand)
+    (( days > 0 )) && result+="${days}d "
+    (( hours > 0 )) && result+="${hours}h "
+    (( minutes > 0 )) && result+="${minutes}m "
+    result+="${seconds}s"
+    if [[ ${BCT_MILLIS:-1} == 1 ]]; then
+        printf -v msec '%03d' "$milliseconds"
+        result+="$msec"
+    fi
+    BCT_FORMATTED_DURATION=$result
 }
-function BCTRegisterCallbacksDirectly() {
-  trap 'BCTPreCommand' DEBUG
-  PROMPT_COMMAND='BCTPostCommand'
+
+_bct_make_prompt_prefix() {
+    local elapsed_ns=${1:-0} command_status=${2:-0}
+    [[ $elapsed_ns =~ ^[0-9]+$ ]] || elapsed_ns=0
+
+    local time_str now_str='' output_str color='' columns padding pad
+    _bct_format_duration "$elapsed_ns"
+    time_str=${BCT_FORMATTED_DURATION:-0s000}
+    if [[ -n ${BCT_TIME_FORMAT:-} ]]; then
+        # Bash printf's %(...)T formatter avoids spawning date for each prompt.
+        printf -v now_str "%(${BCT_TIME_FORMAT})T" -1 2>/dev/null || now_str=''
+    fi
+
+    if [[ -n $now_str ]]; then
+        output_str="[ $time_str | $now_str ]"
+    else
+        output_str="[ $time_str ]"
+    fi
+
+    if [[ ${BCT_COLOR_OUTPUT:-1} == 1 && ${TERM:-dumb} != dumb ]]; then
+        if [[ $command_status -eq 0 ]]; then
+            color=${BCT_SUCCESS_COLOR:-34}
+        else
+            color=${BCT_ERROR_COLOR:-91}
+        fi
+    fi
+
+    columns=${COLUMNS:-80}
+    [[ $columns =~ ^[0-9]+$ ]] && (( columns > 0 )) || columns=80
+    padding=$((columns - ${#output_str}))
+    (( padding < 0 )) && padding=0
+    printf -v pad '%*s' "$padding" ''
+
+    # Readline counts the printable row and ignores only ANSI sequences marked
+    # as nonprinting with \[ and \]. Newlines separate output from the prompt.
+    if [[ -n $color ]]; then
+        printf -v BCT_TIMER_PROMPT_PREFIX '\\n%s\\[\\e[%sm\\]%s\\[\\e[0m\\]\\n' \
+            "$pad" "$color" "$output_str"
+    else
+        printf -v BCT_TIMER_PROMPT_PREFIX '\\n%s%s\\n' "$pad" "$output_str"
+    fi
 }
-# Case 1: User-supplied path via BASH_PREEXEC_LOCATION
-if ! [ -z "$BASH_PREEXEC_LOCATION" ] && [ -f "$BASH_PREEXEC_LOCATION" ]; then
-  BCTRegisterCallbacksWithBashPreexec "$BASH_PREEXEC_LOCATION"
-# Case 2: Common installation locations
-elif [ -f '/usr/share/bash-preexec/bash-preexec.sh' ]; then 
-  BCTRegisterCallbacksWithBashPreexec '/usr/share/bash-preexec/bash-preexec.sh'
-elif [ -f '~/.bash-preexec.sh' ]; then 
-  BCTRegisterCallbacksWithBashPreexec '~/.bash-preexec.sh'
-# Case 3: bash-preexec not found
-else 
-  BCTRegisterCallbacksDirectly
+
+_bct_preexec() {
+    if [[ ${BCT_AT_PROMPT:-0} != 1 ]]; then
+        return 0
+    fi
+    BCT_AT_PROMPT=0
+    if _bct_now_ns; then
+        BCT_COMMAND_START_NS=$BCT_NOW_NS
+    else
+        BCT_COMMAND_START_NS=''
+    fi
+    return 0
+}
+
+_bct_restore_prompt() {
+    PS1=${BCT_BASE_PS1-}
+    return 0
+}
+
+_bct_capture_status() {
+    BCT_LAST_STATUS=$?
+    PS1=${BCT_BASE_PS1-}
+    return 0
+}
+
+_bct_postcmd() {
+    local command_status
+    if [[ ${BCT_USE_BASH_PREEXEC:-0} == 1 ]]; then
+        command_status=$?
+    else
+        command_status=${BCT_LAST_STATUS:-0}
+    fi
+
+    # Capture any prompt changed by another precmd hook, without stacking timers.
+    BCT_BASE_PS1=${PS1-}
+    BCT_AT_PROMPT=1
+
+    if [[ ${BCT_FIRST_PROMPT:-0} == 1 ]]; then
+        BCT_FIRST_PROMPT=0
+        BCT_COMMAND_START_NS=''
+        BCT_TIMER_PROMPT_PREFIX=''
+        PS1=$BCT_BASE_PS1
+        return "$command_status"
+    fi
+
+    if [[ ${BCT_ENABLE:-1} != 1 || ! ${BCT_COMMAND_START_NS:-} =~ ^[0-9]+$ ]]; then
+        BCT_COMMAND_START_NS=''
+        BCT_TIMER_PROMPT_PREFIX=''
+        PS1=$BCT_BASE_PS1
+        return "$command_status"
+    fi
+
+    local end_ns elapsed_ns
+    if _bct_now_ns; then
+        end_ns=$BCT_NOW_NS
+    else
+        end_ns=''
+    fi
+    if [[ ! $end_ns =~ ^[0-9]+$ ]]; then
+        BCT_COMMAND_START_NS=''
+        BCT_TIMER_PROMPT_PREFIX=''
+        PS1=$BCT_BASE_PS1
+        return "$command_status"
+    fi
+
+    elapsed_ns=$((end_ns - BCT_COMMAND_START_NS))
+    (( elapsed_ns < 0 )) && elapsed_ns=0
+    BCT_COMMAND_START_NS=''
+    _bct_make_prompt_prefix "$elapsed_ns" "$command_status"
+    PS1="${BCT_TIMER_PROMPT_PREFIX}${BCT_BASE_PS1}"
+    return "$command_status"
+}
+
+# Helpers can be tested by noninteractive Bash, but hooks are interactive-only.
+[[ $- == *i* ]] || return 0
+
+# Prefer bash-preexec so existing DEBUG/PROMPT_COMMAND hooks can be composed.
+_f2x_preexec_path=''
+if [[ -n ${BASH_PREEXEC_LOCATION:-} && -r ${BASH_PREEXEC_LOCATION} ]]; then
+    _f2x_preexec_path=$BASH_PREEXEC_LOCATION
+elif [[ -n ${bash_preexec_imported:-} || -n ${__bp_imported:-} ]]; then
+    _f2x_preexec_path='already-loaded'
+elif [[ -r /usr/share/bash-preexec/bash-preexec.sh ]]; then
+    _f2x_preexec_path=/usr/share/bash-preexec/bash-preexec.sh
+elif [[ -r $HOME/.bash-preexec.sh ]]; then
+    _f2x_preexec_path=$HOME/.bash-preexec.sh
 fi
-unset -f BCTRegisterCallbacksWithBashPreexec
-unset -f BCTRegisterCallbacksDirectly
+
+if [[ -n $_f2x_preexec_path ]]; then
+    if [[ $_f2x_preexec_path != already-loaded ]]; then
+        source "$_f2x_preexec_path" || _f2x_preexec_path=''
+    fi
+    if [[ -n ${bash_preexec_imported:-} || -n ${__bp_imported:-} ]]; then
+        BCT_USE_BASH_PREEXEC=1
+        declare -p precmd_functions >/dev/null 2>&1 || precmd_functions=()
+        declare -p preexec_functions >/dev/null 2>&1 || preexec_functions=()
+        precmd_functions=(_bct_restore_prompt "${precmd_functions[@]}" _bct_postcmd)
+        preexec_functions+=( _bct_preexec )
+        BCT_LOADED=1
+        unset _f2x_preexec_path
+        return 0
+    fi
+fi
+
+# Never overwrite another script's DEBUG trap. Disable the timer instead.
+if [[ -n $(trap -p DEBUG) ]]; then
+    printf '%s\n' 'bash-command-timer: existing DEBUG trap detected; timer disabled to preserve it. Install bash-preexec to compose hooks.' >&2
+    unset _f2x_preexec_path
+    return 0
+fi
+
+trap '_bct_preexec' DEBUG
+
+# Preserve PROMPT_COMMAND (scalar or Bash 5.1+ array), including exit status.
+_f2x_prompt_decl=$(declare -p PROMPT_COMMAND 2>/dev/null) || _f2x_prompt_decl=''
+if [[ $_f2x_prompt_decl =~ ^declare\ -a[[:space:]] ]]; then
+    PROMPT_COMMAND=(_bct_capture_status "${PROMPT_COMMAND[@]}" _bct_postcmd)
+else
+    _f2x_previous_prompt_command=${PROMPT_COMMAND-}
+    PROMPT_COMMAND='_bct_capture_status'
+    if [[ -n $_f2x_previous_prompt_command ]]; then
+        PROMPT_COMMAND+=$'\n'"$_f2x_previous_prompt_command"
+    fi
+    PROMPT_COMMAND+=$'\n_bct_postcmd'
+fi
+
+BCT_LOADED=1
+unset _f2x_preexec_path _f2x_prompt_decl _f2x_previous_prompt_command
 

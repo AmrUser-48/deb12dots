@@ -55,8 +55,9 @@
 !!########################### UXTerm
 !   У якості емулятора терміналу я користуюся UXterm – unicode версією
 !   UXTerm*faceSize: 16
-UXTerm*forceBoxChars: true
+UXTerm*forceBoxChars: false
 UXTerm.termName: xterm-256color
+UXTerm.vt100.autoWrap: true
 UXTerm*fastScroll: True
 !UXTerm.vt100.font: 7x13
 !UXTerm*maximized: true
@@ -81,6 +82,8 @@ UXTerm*keepSelection: true
 UXTerm*bellIsUrgent: true
 UXTerm*dynamicColors: on
 UXTerm*saveLines: 468000
+UXTerm*scrollKey: true
+UXTerm*scrollTtyOutput: false
 !                
 !				
 !-------------Theme-UXTerm----------------------------------------
@@ -158,7 +161,7 @@ UXTerm*color15: #fdf6e3
 !
 !-----------------------------------------------------------------
 UXTerm*jumpScroll:	 true
-XTerm*scrollKey:	 true
+! XTerm*scrollKey is for XTerm; UXTerm*scrollKey is set above.
 !.XTerm.VT100.scrollKey: true
 UXTerm*multiScroll:	 true
 !-----------------------------------------------------------------

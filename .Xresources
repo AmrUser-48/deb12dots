@@ -29,7 +29,7 @@
 !!xterm*maximized: true
 !! Fonts
 !!   Draw box chars if font dont support feature
-   XTerm*forceBoxChars: true
+   XTerm*forceBoxChars: false
 !  XTerm*faceName: DejaVuSansMono Nerd Font Mono
 !XTerm*faceName: VictorMono Nerd Font Mono
 !XTerm*faceName: IBM\ Plex\ Mono
@@ -41,7 +41,7 @@
 !XTerm*faceName:Hack\ Nerd\ Font\ Mono
 !XTerm*faceName:Iosevka,Iosevka\ Nerd\ Font\ Mono
 ! Font Size
-XTerm*faceSize: 12
+! XTerm*faceSize omitted: the active XLFD font is bitmap-based.
 !    xterm*renderFont: true
 !!  Font for menu
   XTerm*font: -*-terminus-medium-r-normal--14-*-*-*-*-*-iso10646-1
@@ -76,21 +76,15 @@ XTerm*boldFont: -*-terminus-medium-r-normal--14-*-*-*-*-*-iso10646-1
 !!XTerm*font4 : -*-tamzenforpowerline-medium-*-*-*-15-*-*-*-*-*-*-*
 !!XTerm*font5 : -*-tamzenforpowerline-medium-*-*-*-16-*-*-*-*-*-*-*
 !!XTerm*font6 : -*-tamzenforpowerline-medium-*-*-*-20-*-*-*-*-*-*-*
-
-    xterm*locale: true
-!    xterm*utf: on
-    xterm*utf8: on
+    XTerm*locale: true
+    XTerm*utf8: true
+    XTerm.vt100.autoWrap: true
 !   ISO8859-5
     !VT Font Menu: Unreadable
-    xterm*faceSize1: 8
     !VT font menu: Tiny
-    xterm*faceSize2: 10
     !VT font menu: Medium
-    xterm*faceSize3: 14
     !VT font menu: Large
-    xterm*faceSize4: 16
     !VT font menu: Huge
-    xterm*faceSize5: 18
 
 
 
@@ -104,21 +98,11 @@ XTerm*boldFont: -*-terminus-medium-r-normal--14-*-*-*-*-*-iso10646-1
 !! Remove trailing spaces
     XTerm*trimSelection: true
 
-!! Scrolling
-!! Skroll bottom on key press
-!!  XTterm*scrollTtyKeypress: true
-    XTerm*scrollOnKeypress: true
-    XTerm*jumpScroll: true
-    XTerm*fastScroll: True
-!! Use: Shift-Pageup / Shift-Pagedown to scroll or mousewheel
-!! Lines of output that you can scroll back over
+!! Scrolling: retain deep scrollback and do not jump to the bottom on command output.
     XTerm*saveLines: 56384
-!! Scroll Tty Output Only when at Bottom
-!!  XTerm*scrollTtyOutput: true
-    XTerm*scrollTtyOutput_while_scrolling: false
-    XTerm*autoScroll: false
-XTerm*scrollOnOutput: false
-!! Do not scroll when there is new input e.g. tail -f /var/syslog
+    XTerm*scrollKey: true
+    XTerm*jumpScroll: true
+    XTerm*fastScroll: true
     XTerm*scrollTtyOutput: false
 
 
