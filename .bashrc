@@ -83,16 +83,29 @@ xterm*|rxvt*)
 esac
 
 # lf exports LF_LEVEL to shells it starts (for example, with its default w binding).
-# This is an environment-variable check, not a process-tree scan.
-if [[ -n "${LF_LEVEL:-}" ]]; then
-    PS1='\[\e[01;34m\][ \[\e[01;32m\]lf\[\e[01;34m\] ]\[\e[00m\] '"$PS1"
-fi
+# Match the variable directly; do not scan the process tree.
+case ${LF_LEVEL-} in
+    ('') ;;
+    (*)
+        PS1='\[\e[01;34m\][ \[\e[01;32m\]lf\[\e[01;34m\] ]\[\e[00m\] '"$PS1"
+        ;;
+esac
 
 # Ranger sets or increments RANGER_LEVEL for processes it launches.
-# Check it directly; do not scan the parent-process tree.
-if [[ -n "${RANGER_LEVEL:-}" ]]; then
-    PS1='\[\e[01;34m\][ \[\e[01;32m\]ranger\[\e[01;34m\] ]\[\e[00m\] '"$PS1"
-fi
+case ${RANGER_LEVEL-} in
+    ('') ;;
+    (*)
+        PS1='\[\e[01;34m\][ \[\e[01;32m\]ranger\[\e[01;34m\] ]\[\e[00m\] '"$PS1"
+        ;;
+esac
+
+# Midnight Commander sets MC_SID for its subshell; child shells inherit it.
+case ${MC_SID-} in
+    ('') ;;
+    (*)
+        PS1='\[\e[01;34m\][ \[\e[01;32m\]mc\[\e[01;34m\] ]\[\e[00m\] '"$PS1"
+        ;;
+esac
 
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then

@@ -22,13 +22,14 @@ if command -v zsh >/dev/null 2>&1; then
     '
 fi
 
-# LF's documented environment marker is used directly instead of scanning processes.
-grep -Fq 'LF_LEVEL' "$repo_root/.bashrc"
-grep -Fq 'if [[ -n "${RANGER_LEVEL:-}" ]]; then' "$repo_root/.bashrc"
+# Prompt markers use case matching on each tool's environment variable.
+grep -Fq 'case ${LF_LEVEL-} in' "$repo_root/.bashrc"
+grep -Fq 'case ${RANGER_LEVEL-} in' "$repo_root/.bashrc"
+grep -Fq 'case ${MC_SID-} in' "$repo_root/.bashrc"
 grep -Fq ']lf' "$repo_root/.bashrc"
 grep -Fq ']ranger' "$repo_root/.bashrc"
+grep -Fq ']mc' "$repo_root/.bashrc"
 grep -Fq '\[\e[01;34m\][ ' "$repo_root/.bashrc"
 grep -Fq 'printf' "$repo_root/.bashrc"
 grep -Fq '.bashrc' "$repo_root/.bashrc"
-
 echo "Shell configuration smoke tests passed."

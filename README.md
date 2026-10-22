@@ -8,10 +8,12 @@ Debian 12 Bash and X11 terminal configuration.
 `BASH_VERSION` or `ZSH_VERSION`. The `ashow` alias opens this shared file,
 while `src` reloads the appropriate shell startup file.
 
-lf exports `LF_LEVEL` to shells started from its default `w` binding, and
-Ranger sets or increments `RANGER_LEVEL` for child processes. Bash checks both
-variables directly and adds colored `[ lf ]` and `[ ranger ]` prompt markers as
-appropriate, without walking the process tree. If both are set, both markers
+lf exports `LF_LEVEL` to shells started from its default `w` binding, Ranger
+sets or increments `RANGER_LEVEL` for child processes, and Midnight Commander
+sets `MC_SID` for its subshell. Bash uses `case` to check these variables
+directly and prepends colored `[ lf ]`, `[ ranger ]`, and `[ mc ]` prompt
+markers when their respective variables are nonempty, without walking the
+process tree. If multiple variables are inherited, all corresponding markers
 appear. Interactive Bash startup also prints an OpenRC-style `.bashrc` marker.
 
 ## Command timer
