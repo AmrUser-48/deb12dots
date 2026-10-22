@@ -32,6 +32,9 @@ grep -Fq ']mc' "$repo_root/.bashrc"
 grep -Fq '\[\e[01;34m\][ ' "$repo_root/.bashrc"
 grep -Fq 'printf' "$repo_root/.bashrc"
 grep -Fq '.bashrc' "$repo_root/.bashrc"
+# Command timer is loaded like the fzf snippets, without a path override layer.
+grep -Fq '[ -f "$HOME/.local/lib/bash-command-timer/bash_command_timer.sh" ] && source "$HOME/.local/lib/bash-command-timer/bash_command_timer.sh"' "$repo_root/.bashrc"
+! grep -Fq 'BASH_COMMAND_TIMER_PATH' "$repo_root/.bashrc"
 # The profile script prints one debug marker at the end, not a fake service status.
 grep -Fq 'Simple startup debug marker' "$repo_root/etc/profile.d/40-user.sh"
 grep -Fq '\033[1;32m' "$repo_root/etc/profile.d/40-user.sh"
