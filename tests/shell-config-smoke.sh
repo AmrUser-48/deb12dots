@@ -2,7 +2,7 @@
 set -euo pipefail
 
 repo_root=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)
-bash -n "$repo_root/.aaliases" "$repo_root/.bashrc"
+bash -n "$repo_root/.aaliases" "$repo_root/.bashrc" "$repo_root/etc/profile.d/40-user.sh"
 
 # Source the shared aliases in a clean Bash without loading the user's dotfiles.
 ALIASES_FILE="$repo_root/.aaliases" bash --noprofile --norc -c '
@@ -32,4 +32,6 @@ grep -Fq ']mc' "$repo_root/.bashrc"
 grep -Fq '\[\e[01;34m\][ ' "$repo_root/.bashrc"
 grep -Fq 'printf' "$repo_root/.bashrc"
 grep -Fq '.bashrc' "$repo_root/.bashrc"
+grep -Fq 'Loading /etc/profile.d/40-user.sh ...' "$repo_root/etc/profile.d/40-user.sh"
+grep -Fq '[ ok ]' "$repo_root/etc/profile.d/40-user.sh"
 echo "Shell configuration smoke tests passed."

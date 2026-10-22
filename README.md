@@ -14,7 +14,7 @@ sets `MC_SID` for its subshell. Bash uses `case` to check these variables
 directly and prepends colored `[ lf ]`, `[ ranger ]`, and `[ mc ]` prompt
 markers when their respective variables are nonempty, without walking the
 process tree. If multiple variables are inherited, all corresponding markers
-appear. Interactive Bash startup also prints an OpenRC-style `.bashrc` marker.
+appear. Interactive Bash startup also prints an OpenRC-style `.bashrc` marker. The supplied `etc/profile.d/40-user.sh` uses the same ` * Loading … ... [ ok ]` status-line format while configuring user aliases and helper functions.
 
 ## Command timer
 
