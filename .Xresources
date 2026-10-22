@@ -191,7 +191,6 @@
 !  #include ".config/Xresources/colors/colors.xterm"
 #include ".config/Xresources/colors/gruvbox-dark.xterm"
 !   #include ".config/Xresources/colors/gruvbox-light.xterm"
-
 !! }}}
 
 !! Xedit: probably incorrect colors settings
@@ -214,14 +213,6 @@
     xedit*.color7:  #BFBFBF
     xedit*.color15: #E6E6E6
 
-!! Application-specific resources and optional terminal configurations
-!! Includes
-!!#include ".config/Xresources/xterm"
-#include ".config/Xresources/UXterm"
-!!#include ".config/Xresources/MTerm"
-!!#include ".config/Xresources/ITerm"
-!!#include ".config/Xresources/URxvt"
-!#include ".config/Xresources/koi8rxterm"
 
 !! XCalc
     xcalc*background: #1e1e1e
@@ -237,5 +228,16 @@
     xcalc.button.activeBackground: #404040
     xcalc.button.activeForeground: #ffffff
 !!xcalc*font: -misc-fixed-medium-r-normal--12-*-*-*-*-*-iso8859-1
+
+!! Application-specific resources and optional terminal configurations
+!! Includes
+!!#include ".config/Xresources/xterm"
+#include ".config/Xresources/UXterm"
+!!#include ".config/Xresources/MTerm"
+!!#include ".config/Xresources/ITerm"
+!!#include ".config/Xresources/URxvt"
+!#include ".config/Xresources/koi8rxterm"
+
+
 
 !!	vim: ft=xdefaults  ts=4 sw=4 sts=4 et sr
