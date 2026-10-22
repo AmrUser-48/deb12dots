@@ -35,8 +35,8 @@ grep -Fq '.bashrc' "$repo_root/.bashrc"
 # The profile script prints one debug marker at the end, not a fake service status.
 grep -Fq 'Simple startup debug marker' "$repo_root/etc/profile.d/40-user.sh"
 grep -Fq '\033[1;32m' "$repo_root/etc/profile.d/40-user.sh"
-grep -Fq '"/etc/profile.d/40-user.sh"' "$repo_root/etc/profile.d/40-user.sh"
+grep -Fq '${BASH_SOURCE[0]}' "$repo_root/etc/profile.d/40-user.sh"
 ! grep -Fq 'Loading /etc/profile.d/40-user.sh ...' "$repo_root/etc/profile.d/40-user.sh"
 ! grep -Fq '[ ok ]' "$repo_root/etc/profile.d/40-user.sh"
-[[ $(tail -n 1 "$repo_root/etc/profile.d/40-user.sh") == *'/etc/profile.d/40-user.sh'* ]]
+[[ $(tail -n 1 "$repo_root/etc/profile.d/40-user.sh") == *'${BASH_SOURCE[0]}'* ]]
 echo "Shell configuration smoke tests passed."

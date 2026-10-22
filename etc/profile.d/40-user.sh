@@ -43,4 +43,4 @@ trans :uk -b "$@"
 
 
 # Simple startup debug marker; visual style only, with no OpenRC dependency.
-printf '\033[1;32m * \033[1;34m[\033[0m %s \033[1;34m]\033[0m\n' "/etc/profile.d/40-user.sh"
+printf '\033[1;32m * \033[1;34m[\033[0m %s \033[1;34m]\033[0m\n' "${BASH_SOURCE[0]}"
