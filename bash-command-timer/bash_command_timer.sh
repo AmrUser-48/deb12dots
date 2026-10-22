@@ -50,14 +50,14 @@ _bct_now_ns() {
 
 _bct_format_duration() {
     local elapsed_ns=${1:-0}
-    [[ $elapsed_ns =~ ^[0-9]+$ ]] || elapsed_ns=0
-    local total_seconds=$((elapsed_ns / 1000000000))
-    local days=$((total_seconds / 86400))
-    local hours=$((total_seconds % 86400 / 3600))
-    local minutes=$((total_seconds % 3600 / 60))
-    local seconds=$((total_seconds % 60))
-    local milliseconds=$((elapsed_ns / 1000000 % 1000))
-    local result='' msec=''
+    case $elapsed_ns in (''|*[!0123456789]*) elapsed_ns=0;; esac
+
+    local total_seconds=$((elapsed_ns / 1000000000)) days hours minutes seconds milliseconds result='' msec=''
+    days=$((total_seconds / 86400))
+    hours=$((total_seconds % 86400 / 3600))
+    minutes=$((total_seconds % 3600 / 60))
+    seconds=$((total_seconds % 60))
+    milliseconds=$((elapsed_ns / 1000000 % 1000))
 
     (( days > 0 )) && result+="${days}d "
     (( hours > 0 )) && result+="${hours}h "
@@ -72,8 +72,6 @@ _bct_format_duration() {
 
 _bct_make_prompt_prefix() {
     local elapsed_ns=${1:-0} command_status=${2:-0}
-    [[ $elapsed_ns =~ ^[0-9]+$ ]] || elapsed_ns=0
-
     local time_str now_str='' output_str color='' columns padding pad
     _bct_format_duration "$elapsed_ns"
     time_str=${BCT_FORMATTED_DURATION:-0s000}
@@ -97,7 +95,7 @@ _bct_make_prompt_prefix() {
     fi
 
     columns=${COLUMNS:-80}
-    [[ $columns =~ ^[0-9]+$ ]] && (( columns > 0 )) || columns=80
+    [[ $columns != *[!0123456789]* ]] && (( columns > 0 )) || columns=80
     padding=$((columns - ${#output_str}))
     (( padding < 0 )) && padding=0
     printf -v pad '%*s' "$padding" ''
@@ -156,7 +154,7 @@ _bct_postcmd() {
         return "$command_status"
     fi
 
-    if [[ ${BCT_ENABLE:-1} != 1 || ! ${BCT_COMMAND_START_NS:-} =~ ^[0-9]+$ ]]; then
+    if [[ ${BCT_ENABLE:-1} != 1 || -z ${BCT_COMMAND_START_NS:-} ]]; then
         BCT_COMMAND_START_NS=''
         BCT_TIMER_PROMPT_PREFIX=''
         PS1=$BCT_BASE_PS1
@@ -169,7 +167,7 @@ _bct_postcmd() {
     else
         end_ns=''
     fi
-    if [[ ! $end_ns =~ ^[0-9]+$ ]]; then
+    if [[ -z $end_ns ]]; then
         BCT_COMMAND_START_NS=''
         BCT_TIMER_PROMPT_PREFIX=''
         PS1=$BCT_BASE_PS1
@@ -222,7 +220,8 @@ if [[ -n $(trap -p DEBUG) ]]; then
     return 0
 fi
 
-trap '_bct_preexec' DEBUG
+# Skip the function call unless the first command after a prompt starts.
+trap '[[ ${BCT_AT_PROMPT:-0} != 1 ]] || _bct_preexec' DEBUG
 
 # Preserve PROMPT_COMMAND (scalar or Bash 5.1+ array), including exit status.
 _f2x_prompt_decl=$(declare -p PROMPT_COMMAND 2>/dev/null) || _f2x_prompt_decl=''
