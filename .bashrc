@@ -60,8 +60,8 @@ esac
 if [ -n "$force_color_prompt" ]; then
     if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
 	# We have color support; assume it's compliant with Ecma-48
-	# (ISO/IEC-6429). (Lack of such support is extremely rare, and such
-	# a case would tend to support setf rather than setaf.)
+	# (ISO/IEC-6429). Lack of such support is extremely rare, and such
+	# a case would tend to support setf rather than setaf.
 	color_prompt=yes
     else
 	color_prompt=
@@ -69,9 +69,9 @@ if [ -n "$force_color_prompt" ]; then
 fi
 
 if [ "$color_prompt" = yes ]; then
-    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
+    PS1='${debian_chroot:+($debian_chroot)}\\[\\033[01;32m\\]\\u@\\h\\[\\033[00m\\]:\\[\\033[01;34m\\]\\w\\[\\033[00m\\]\\$ '
 else
-    PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
+    PS1='${debian_chroot:+($debian_chroot)}\\u@\\h:\\w\\$ '
 fi
 unset color_prompt force_color_prompt
 
@@ -80,7 +80,7 @@ unset color_prompt force_color_prompt
 # If this terminal is an xterm; set the title to user@host:dir
 case "$TERM" in
 xterm*|rxvt*)
-    PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
+    PS1="\\[\\e]0;${debian_chroot:+($debian_chroot)}\\u@\\h: \\w\\a\\]$PS1"
     ;;
 *)
     ;;
@@ -93,7 +93,7 @@ esac
 case ${LF_LEVEL-} in
     ('') ;;
     (*)
-        PS1='\[\e[01;34m\][ \[\e[01;32m\]lf\[\e[01;34m\] ]\[\e[00m\] '"$PS1"
+        PS1='\\[\\e[01;34m\\][ \\[\\e[01;32m\\]lf\\[\\e[01;34m\\] ]\\[\\e[00m\\] '"$PS1"
         ;;
 esac
 
@@ -103,7 +103,7 @@ esac
 case ${RANGER_LEVEL-} in
     ('') ;;
     (*)
-        PS1='\[\e[01;34m\][ \[\e[01;32m\]ranger\[\e[01;34m\] ]\[\e[00m\] '"$PS1"
+        PS1='\\[\\e[01;34m\\][ \\[\\e[01;32m\\]ranger\\[\\e[01;34m\\] ]\\[\\e[00m\\] '"$PS1"
         ;;
 esac
 
@@ -113,7 +113,7 @@ esac
 case ${MC_SID-} in
     ('') ;;
     (*)
-        PS1='\[\e[01;34m\][ \[\e[01;32m\]mc\[\e[01;34m\] ]\[\e[00m\] '"$PS1"
+        PS1='\\[\\e[01;34m\\][ \\[\\e[01;32m\\]mc\\[\\e[01;34m\\] ]\\[\\e[00m\\] '"$PS1"
         ;;
 esac
 
@@ -196,14 +196,8 @@ cd() {
 [ -f /usr/share/doc/fzf/examples/key-bindings.bash ] && source /usr/share/doc/fzf/examples/key-bindings.bash
 [ -f /usr/share/bash-completion/completions/fzf ] && source /usr/share/bash-completion/completions/fzf
 
-
-
-# Command timer: maintained, Readline-aware implementation.
-_bct_script="${BASH_COMMAND_TIMER_PATH:-$HOME/.local/lib/bash-command-timer/bash_command_timer.sh}"
-if [[ -r "$_bct_script" ]]; then
-    source "$_bct_script"
-fi
-unset _bct_script
+# Command timer
+[ -f "$HOME/.local/lib/bash-command-timer/bash_command_timer.sh" ] && source "$HOME/.local/lib/bash-command-timer/bash_command_timer.sh"
 
 
 
@@ -215,14 +209,14 @@ run-help() {
         return 1
     fi
 
-    # Try --help, man, tldr (if installed), fallback to help -m
+    # Try --help, man, tldr (installed) fallback to help -m
     if "$cmd" --help 2>&1 | less; then
         return 0
     elif man "$cmd" 2>/dev/null; then
         return 0
     elif command -v tldr &>/dev/null && tldr "$cmd"; then
         return 0
-    elif help "$cmd" 2>/dev/null | less; then
+    elif help -m "$cmd" 2>/dev/null | less; then
         return 0
     else
         echo "No help available for '$cmd'." >&2
