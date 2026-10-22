@@ -18,6 +18,7 @@ appear. Interactive Bash startup also prints an OpenRC-style `.bashrc` marker. T
 
 ## Command timer
 Tweaked some old version of Command Timer. don't remember where i steel it.
+```
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #                                                                             #
 #    Copyright (C) 2014-2020 Chuan Ji <chuan@jichu4n.com>                     #
@@ -35,7 +36,7 @@ Tweaked some old version of Command Timer. don't remember where i steel it.
 #    limitations under the License.                                           #
 #                                                                             #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-
+```
 `bash-command-timer/upstream/bash_command_timer.sh` preserves the exact original timer script uploaded with the repository at baseline commit `cd0dea7755e43371a2a21c67b01d9ccb3f448cd0`. The active implementation is `bash-command-timer/bash_command_timer.sh`. It retains the familiar `[ duration | time ]` display, measures duration with `EPOCHREALTIME` on modern Bash, and uses Bash's built-in `printf %(...)T` clock formatter to avoid per-command `date` processes.
 
 The original timer directly moved the terminal cursor from `PROMPT_COMMAND` and could desynchronize Readline while editing long commands; its standalone hook installation also replaced `DEBUG`/`PROMPT_COMMAND`. The active implementation composes the timer into `PS1`, wrapping nonprinting ANSI sequences in `\[...\]`, preserves existing `PROMPT_COMMAND`, and refuses to replace an existing `DEBUG` trap if bash-preexec is unavailable.
