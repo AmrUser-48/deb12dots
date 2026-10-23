@@ -33,6 +33,11 @@
 !! XTerm*loginShell: false
 !!xterm*maximized: true
 !! Fonts
+!! set fontsize
+!! xterm*font:     *-fixed-*-*-*-12-*
+!! 
+!! xterm*faceName: Monospace
+!
 !!   Draw box chars if font dont support feature
     XTerm*forceBoxChars: false
     XTerm*renderFont: false
@@ -173,11 +178,7 @@
 !!                                <BtnUp>:select-end(SELECT, CUT_BUFFER0) \n\
 !!                              <BtnDown>:ignore()
 
-!! set fontsize
-!! xterm*font:     *-fixed-*-*-*-12-*
-!! set font
-!! xterm*faceName: Monospace
-!
+
 !! Cursor
 !! pointer and cursor (blinking and color)
     XTerm*pointerColor: white
