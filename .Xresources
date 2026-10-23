@@ -35,6 +35,7 @@
 !! Fonts
 !!   Draw box chars if font dont support feature
     XTerm*forceBoxChars: false
+    XTerm*renderFont: false
 !  XTerm*faceName: DejaVuSansMono Nerd Font Mono
 !XTerm*faceName: VictorMono Nerd Font Mono
 !XTerm*faceName: IBM\ Plex\ Mono
@@ -49,20 +50,20 @@
 ! XTerm*faceSize omitted: the active XLFD font is bitmap-based.
 !    xterm*renderFont: true
 !!  Font for menu
-    XTerm*font: -*-terminus-medium-r-normal--14-*-*-*-*-*-iso10646-1
+    XTerm*VT100.font: -xos4-terminus-medium-r-normal--14-140-72-72-c-80-iso10646-1
 !XTerm*boldFont: fixed
-    XTerm*boldFont: -*-terminus-medium-r-normal--14-*-*-*-*-*-iso10646-1
+    XTerm*VT100.boldFont: -xos4-terminus-bold-r-normal--14-140-72-72-c-80-iso10646-1
 !  XTerm*font: -*-terminus-bold-r-*-*-12-*-*-*-*-*-iso10646-1
 !!  XTerm*font: -*-terminus-medium-r-*-*-12-*-*-*-*-*-*-*
 ! wait   XTerm*font: -*-fixed-bold-r-*-*-*-100-*-*-*-*-iso8859-1
 
-    XTerm*font1: -*-terminus-medium-r-normal--14-*-*-*-*-*-iso10646-1
-    XTerm*font2: -*-terminus-medium-r-normal--12-*-*-*-*-*-iso10646-1
-    XTerm*font3: -*-terminus-medium-r-normal--16-*-*-*-*-*-iso10646-1
-    XTerm*font4: -*-terminus-medium-r-normal--18-*-*-*-*-*-iso10646-1
-    XTerm*font5: -*-terminus-medium-r-normal--24-*-*-*-*-*-iso10646-1
-    XTerm*font6: -*-terminus-medium-r-normal--28-*-*-*-*-*-iso10646-1
-    XTerm*font7: -*-terminus-medium-r-normal--32-*-*-*-*-*-iso10646-1
+    XTerm*VT100.font1: -xos4-terminus-medium-r-normal--14-140-72-72-c-80-iso10646-1
+    XTerm*VT100.font2: -xos4-terminus-medium-r-normal--12-120-72-72-c-60-iso10646-1
+    XTerm*VT100.font3: -xos4-terminus-medium-r-normal--16-160-72-72-c-80-iso10646-1
+    XTerm*VT100.font4: -xos4-terminus-medium-r-normal--18-180-72-72-c-100-iso10646-1
+    XTerm*VT100.font5: -xos4-terminus-medium-r-normal--24-240-72-72-c-120-iso10646-1
+    XTerm*VT100.font6: -xos4-terminus-medium-r-normal--28-280-72-72-c-140-iso10646-1
+    XTerm*VT100.font7: -xos4-terminus-medium-r-normal--32-320-72-72-c-160-iso10646-1
 
 !! tamzen
 !!XTerm*font  : -*-tamzen-medium-*-*-*-16-*-*-*-*-*-*-*
