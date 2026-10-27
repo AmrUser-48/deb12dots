@@ -152,7 +152,7 @@ return {
   ["prettier.config.mjs"]        = { icon = "", color = "#4285F4", cterm_color = "33",  name = "PrettierConfig"          },
   ["prettier.config.ts"]         = { icon = "", color = "#4285F4", cterm_color = "33",  name = "PrettierConfig"          },
   ["procfile"]                   = { icon = "", color = "#A074C4", cterm_color = "140", name = "Procfile"                },
-  ["py.typed"]                   = { icon = "", color = "#FFBC03", cterm_color = "214", name = "Py.typed"                },
+  ["py.typed"]                   = { icon = "", color = "#FFBC03", cterm_color = "214", name = "PyTyped"                },
   ["rakefile"]                   = { icon = "", color = "#701516", cterm_color = "52",  name = "Rakefile"                },
   ["readme"]                     = { icon = "󰂺", color = "#EDEDED", cterm_color = "255", name = "Readme"                  },
   ["readme.md"]                  = { icon = "󰂺", color = "#EDEDED", cterm_color = "255", name = "Readme"                  },
