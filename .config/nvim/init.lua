@@ -208,18 +208,22 @@ vim.g.loaded_netrwPlugin = 1
 -- 2. Optional: Enable true color support
 vim.opt.termguicolors = true
 
--- 3. Legacy 0.7 global variable configurations (Replaces the modern setup table)
-vim.g.nvim_tree_side = "left"
-vim.g.nvim_tree_width = 30
-vim.g.nvim_tree_ignore = { ".git", "node_modules", ".cache" }
-vim.g.nvim_tree_auto_open = 0
-vim.g.nvim_tree_hide_dotfiles = 0 -- 0 means show dotfiles, 1 means hide them
-vim.g.nvim_tree_group_empty = 1   -- Compact nested empty folders
-
--- 4. Safe fallback setup execution for older versions
+-- Use the current nvim-tree setup API (Neovim 0.7-compatible).
 local status_ok, nvim_tree = pcall(require, "nvim-tree")
 if status_ok then
-  nvim_tree.setup({})
+  nvim_tree.setup({
+    view = {
+      side = "left",
+      width = 30,
+    },
+    renderer = {
+      group_empty = true,
+    },
+    filters = {
+      dotfiles = false,
+      custom = { "%.git", "node_modules", "%.cache" },
+    },
+  })
 end
 
 -- 5. Global Keymap to toggle the sidebar window
