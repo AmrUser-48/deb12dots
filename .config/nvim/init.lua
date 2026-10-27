@@ -1,4 +1,7 @@
 -- Options {{{
+local undo_dir = vim.fn.stdpath('config') .. '/undo'
+vim.fn.mkdir(undo_dir, 'p')
+
 local config_options = {
   wildignorecase = true,
   pastetoggle = '<F12>',
@@ -23,7 +26,7 @@ local config_options = {
   termguicolors = true,
   background = 'dark',
   undofile = true,
-  undodir = vim.fn.expand('$HOME/.config/nvim/undo'),
+  undodir = undo_dir,
   foldmethod = 'marker',
   foldmarker = '{{{,}}}',
   fillchars = { fold = ' ', vert = '│', eob = ' ', msgsep = '‾' },
@@ -132,7 +135,6 @@ map('n', '<Right>', '<C-w>l')
 map('n', '<Left>', '<C-w>h')
 map('n', '<Down>', '<C-w>j')
 map('n', '<Up>', '<C-w>k')
-map('n', '<leader>q', 'ZQ')
 map('n', '<leader>s', '<C-w>s')
 map('n', '<leader>v', '<C-w>v')
 map('n', '<leader>c', '<C-w>c')
@@ -229,6 +231,7 @@ vim.keymap.set("n", "<C-n>", ":NvimTreeToggle<CR>", { silent = true })
 
 -- Appearance {{{
 -- COLORSCHEME {{{
+vim.cmd('packadd vim-gruvbox8')
 vim.cmd('colorscheme gruvbox8')
 -- }}}
 
@@ -341,11 +344,20 @@ vim.api.nvim_create_autocmd('BufReadPost', {
 
 -- Startify: show recent files on demand {{{
 local alpha = require("alpha")
-local dashboard = require("alpha.themes.dashboard")
 local startify = require("alpha.themes.startify")
 
-startify.mru_sections = { "mru" }
-startify.file_icons.enabled = false
+-- Disable icons without requiring nvim-web-devicons.
+startify.nvim_web_devicons.enabled = false
+
+-- Show the global recent-files list only, not a second cwd-specific list.
+startify.config.layout = {
+  { type = "padding", val = 1 },
+  startify.section.header,
+  { type = "padding", val = 1 },
+  startify.section.mru,
+  { type = "padding", val = 1 },
+  startify.section.bottom_buttons,
+}
 
 vim.api.nvim_create_user_command("AlphaRecent", function()
   if vim.bo.filetype == "alpha" then
@@ -353,10 +365,4 @@ vim.api.nvim_create_user_command("AlphaRecent", function()
   end
   alpha.start(false, startify.config)
 end, { desc = "Show recent files" })
-
--- Add a button to the existing dashboard
-table.insert(
-  dashboard.section.buttons.val,
-  dashboard.button("l", "Recent files", "<cmd>AlphaRecent<CR>")
-)
 -- }}}
