@@ -1,0 +1,164 @@
+#connection_timeout	"8000"
+music_directory		"~/Music"
+playlist_directory	"~/Music"
+db_file			"~/Music/mpd.db"
+log_file		"~/.mpd/mpd.log"
+pid_file		"~/.mpd/pid"
+state_file		"~/.mpd/state"
+sticker_file    "~/.mpd/ticker.sql"
+#user			"mpd"
+#group                  "audio"
+bind_to_address	"0.0.0.0"
+#bind_to_address	        "127.0.0.1"
+bind_to_address		"~/.mpd/socket"
+port			"6600"
+log_level		"default"
+#gapless_mp3_playback	"yes"
+#restore_paused "no"
+save_absolute_paths_in_playlists	"no"
+metadata_to_use	"artist,album,title,track,name,genre,date,composer,performer,disc"
+auto_update    "no"
+#auto_update_depth "3"
+
+follow_outside_symlinks	"yes"
+
+follow_inside_symlinks		"yes"
+
+# Input #######################################################################
+#
+#
+#input {
+#        plugin "curl"
+#       proxy "proxy.isp.com:8080"
+#       proxy_user "user"
+#       proxy_password "password"
+#		timeout	"2"
+#}
+#
+decoder {
+        plugin                  "hybrid_dsd"
+        enabled                 "no"
+#       gapless                 "no"
+}
+decoder {
+        plugin        "wildmidi"
+        enabled       "no"
+        #config_file "/etc/timidity/timidity.cfg"
+}
+
+# Audio Output ################################################################
+#
+#audio_output {
+#	type		"alsa"
+#	name		"My ALSA Device"
+#	device		"hw:0,0"	# optional
+#	mixer_type      "hardware"      # optional
+#	mixer_device	"default"	# optional
+#	mixer_control	"PCM"		# optional
+#	mixer_index	"0"		# optional
+#}
+#
+
+#audio_output {
+#	type		"httpd"
+#	name		"My HTTP Stream"
+#	encoder		"vorbis"		# optional, vorbis or lame
+#	port		"8000"
+#	bind_to_address "0.0.0.0"               # optional, IPv4 or IPv6
+#	quality		"5.0"			# do not define if bitrate is defined
+#	bitrate		"128"			# do not define if quality is defined
+#	format		"44100:16:1"
+#	max_clients     "1"                     # optional 0=no limit
+#}
+
+audio_output {
+	type		"pulse"
+	name		"Pulse Audio Output"
+#	mixer_control	"Master"
+##	server		"remote_server"		# optional
+##	sink		"remote_server_sink"	# optional
+	buffer_time	"230000"
+}
+#
+#audio_output {
+#	type		"pipe"
+#	name		"my pipe"
+#	command		"aplay -f cd 2>/dev/null"
+## Or if you're want to use AudioCompress
+#	command		"AudioCompress -m | aplay -f cd 2>/dev/null"
+## Or to send raw PCM stream through PCM:
+#	command		"nc example.org 8765"
+#	format		"44100:16:2"
+#}
+#
+audio_output {
+	type		"alsa"
+	name		"My ALSA Device"
+##	device		"hw:0,0"	# optional
+##	mixer_type      "hardware"	# optional
+##	mixer_device	"default"	# optional
+##	mixer_control	"PCM"		# optional
+##	mixer_index	"0"		# optional
+	enabled		"no"
+}
+#
+audio_output {
+	type		"pipe"
+	name		"sox EQ Alsa"
+	command		"sox -q -t raw -c 2 -b 16 -r 44100 -e signed -L - -t alsa equalizer 1000 .4k -14 "
+## Or if you're want to use AudioCompress
+#	command		"AudioCompress -m | aplay -f cd 2>/dev/null"
+## Or to send raw PCM stream through PCM:
+#	command		"nc example.org 8765"
+	format		"44100:16:2"
+	enabled		"no"
+}
+audio_output {
+	type		"pipe"
+	name		"sox EQ Pulse"
+	command		"sox -q -t raw -c 2 -b 16 -r 44100 -e signed -L - -t pulseaudio equalizer 1000 .4k -14 "
+## Or if you're want to use AudioCompress
+#	command		"AudioCompress -m | aplay -f cd 2>/dev/null"
+## Or to send raw PCM stream through PCM:
+#	command		"nc example.org 8765"
+	format		"44100:16:2"
+	enabled		"no"
+}
+
+audio_output {
+	type		"pipe"
+	name		"sox EQ lp"
+	command		"sox -q -t raw -c 2 -b 16 -r 44100 -e signed -L - -t pulseaudio lowpass -1 1k"
+## Or if you're want to use AudioCompress
+#	command		"AudioCompress -m | aplay -f cd 2>/dev/null"
+## Or to send raw PCM stream through PCM:
+#	command		"nc example.org 8765"
+	format		"44100:16:2"
+	enabled		"no"
+}
+#
+audio_output {
+	type		"pipe"
+	name		"sox EQ 9-5k"
+	command		"sox -q -t raw -c 2 -b 16 -r 44100 -e signed -L - -t pulseaudio highpass -2 950 lowpass -2 5k"
+## Or if you're want to use AudioCompress
+#	command		"AudioCompress -m | aplay -f cd 2>/dev/null"
+## Or to send raw PCM stream through PCM:
+#	command		"nc example.org 8765"
+	format		"44100:16:2"
+	enabled		"no"
+}
+#
+samplerate_converter		"Fastest Sinc Interpolator"
+filesystem_charset		"UTF-8"
+#id3v1_encoding			"UTF-8"
+
+# Visualizer
+audio_output {
+        type  "fifo"
+        name  "mpdFIFO"
+        path  "~/.mpd/mpd.fifo"
+        format  "44100:16:2"
+        enabled  "no"
+}
+# vim: ft=conf ts=4
