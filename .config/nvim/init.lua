@@ -35,9 +35,9 @@ local config_options = {
   modelines = 5,
 }
 
-for option, value in pairs(config_options) do
-  vim.opt[option] = value
-end
+-- for option, value in pairs(config_options) do
+--  vim.opt[option] = value -- 
+-- end
 
 if vim.fn.executable('rg') == 1 then
   vim.opt.grepprg = 'rg --vimgrep --no-heading --smart-case'
