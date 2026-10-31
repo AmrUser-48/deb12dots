@@ -11,7 +11,7 @@ vim.opt.wildignore:append({
 })
 
 local opts = {
-  wildignorecase = true, pastetoggle = '<F12>', splitbelow = true, splitright = true,
+  wildignorecase = true, splitbelow = true, splitright = true,
   tabstop = 4, softtabstop = 4, shiftwidth = 4, expandtab = true, visualbell = true,
   errorbells = false, mouse = 'a', ignorecase = true, smartcase = true, showmatch = true,
   incsearch = true, history = 10000, number = false, wrap = true, showcmd = false,
