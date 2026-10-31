@@ -1,0 +1,3 @@
+GOVERNOR="schedutil"
+#MAX_FREQ="2.00GHz"
+#MIN_FREQ="800MHz"

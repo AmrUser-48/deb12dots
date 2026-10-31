@@ -1,0 +1,4 @@
+ENABLE="true"
+GOVERNOR="performance"
+MIN_SPEED="800"
+MAX_SPEED="2001"
