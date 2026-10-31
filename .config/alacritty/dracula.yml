@@ -1,0 +1,71 @@
+window:
+  dynamic_title: true
+
+font:
+  normal:
+    family: monospace
+  size: 11.0
+
+
+ Enable automatic config reload
+live_config_reload: true
+
+# Dracula theme
+colors:
+  primary:
+    background: '#282a36'
+    foreground: '#f8f8f2'
+
+  cursor:
+    text: '#282a36'
+    cursor: '#f8f8f0'
+
+  normal:
+    black:   '#21222c'
+    red:     '#ff5555'
+    green:   '#50fa7b'
+    yellow:  '#f1fa8c'
+    blue:    '#bd93f9'
+    magenta: '#ff79c6'
+    cyan:    '#8be9fd'
+    white:   '#f8f8f2'
+
+  bright:
+    black:   '#6272a4'
+    red:     '#ff6e6e'
+    green:   '#69ff94'
+    yellow:  '#ffffa5'
+    blue:    '#d6acff'
+    magenta: '#ff92df'
+    cyan:    '#a4ffff'
+    white:   '#ffffff'
+
+key_bindings:
+  # Clipboard
+  - { key: C, mods: Control|Shift, action: Copy }
+  - { key: V, mods: Control|Shift, action: Paste }
+
+  # Reload configuration
+  - { key: R, mods: Control|Shift, action: ReloadConfig }
+
+  # Search scrollback
+  - { key: F, mods: Control|Shift, action: SearchForward }
+  - { key: B, mods: Control|Shift, action: SearchBackward }
+
+  # Vi mode
+  - { key: Space, mods: Control|Shift, action: ToggleViMode }
+
+  # Font size
+  - { key: Plus,  mods: Control, action: IncreaseFontSize }
+  - { key: Minus, mods: Control, action: DecreaseFontSize }
+  - { key: Key0, mods: Control, action: ResetFontSize }
+
+  # Scrolling
+  - { key: PageUp,   mods: Shift, action: ScrollPageUp }
+  - { key: PageDown, mods: Shift, action: ScrollPageDown }
+  - { key: Home,     mods: Shift, action: ScrollToTop }
+  - { key: End,      mods: Shift, action: ScrollToBottom }
+
+
+
+

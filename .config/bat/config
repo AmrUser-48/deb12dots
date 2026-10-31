@@ -1,0 +1,11 @@
+--theme="ansi"
+#--theme="gruvbox-dark"
+#--theme="gruvbox-light"
+#--theme="Solarized (dark)"
+#--theme="Solarized (light)"
+#--theme="GitHub"
+#--theme="base16"
+##
+#--style="plain"
+--style="changes,grid,header,snip"
+
