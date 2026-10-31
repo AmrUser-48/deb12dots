@@ -4,7 +4,6 @@ vim.fn.mkdir(undo_dir, 'p')
 
 local config_options = {
   wildignorecase = true,
-  pastetoggle = '<F12>',
   splitbelow = true,
   splitright = true,
   tabstop = 4,
@@ -35,9 +34,10 @@ local config_options = {
   modelines = 5,
 }
 
--- for option, value in pairs(config_options) do
---  vim.opt[option] = value -- 
--- end
+-- Neovim applies bracketed paste automatically; the removed 'pastetoggle' option is obsolete.
+for option, value in pairs(config_options) do
+  vim.opt[option] = value
+end
 
 if vim.fn.executable('rg') == 1 then
   vim.opt.grepprg = 'rg --vimgrep --no-heading --smart-case'
